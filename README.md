@@ -2,7 +2,7 @@
 
 🌐 A mobile DNS configuration tool for iOS with Liquid Glass UI
 
-<img alt="GlassDNS banner" src="img/banner.png">
+<div align="center"><img alt="GlassDNS banner" src="img/banner.png" width="280"></div>
 
 | Category | Stack |
 | -------- | ----- |
