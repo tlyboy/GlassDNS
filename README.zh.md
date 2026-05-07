@@ -2,6 +2,8 @@
 
 🌐 一款采用 Liquid Glass 设计的 iOS 移动端 DNS 配置工具
 
+<img alt="GlassDNS banner" src="img/banner-zh.png">
+
 | 分类 | 技术栈 |
 | ---- | ------ |
 | 平台 | iOS 26+ |
