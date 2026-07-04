@@ -22,7 +22,7 @@
 ### Build from Source
 
 ```bash
-git clone https://github.com/tlyboys/GlassDNS.git
+git clone https://github.com/tlyboy/GlassDNS.git
 cd GlassDNS
 open GlassDNS.xcodeproj
 ```
