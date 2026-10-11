@@ -4,11 +4,11 @@
 
 <div align="center"><img alt="GlassDNS banner" src="img/banner-zh.png" width="280"></div>
 
-| 分类 | 技术栈 |
-| ---- | ------ |
-| 平台 | iOS 26+ |
-| 框架 | SwiftUI |
-| 语言 | Swift 5 |
+| 分类 | 技术栈                  |
+| ---- | ----------------------- |
+| 平台 | iOS 26+                 |
+| 框架 | SwiftUI                 |
+| 语言 | Swift 5                 |
 | 设计 | Liquid Glass / 玻璃拟态 |
 
 ## 安装

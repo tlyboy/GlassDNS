@@ -4,12 +4,12 @@
 
 <div align="center"><img alt="GlassDNS banner" src="img/banner.png" width="280"></div>
 
-| Category | Stack |
-| -------- | ----- |
-| Platform | iOS 26+ |
-| Framework | SwiftUI |
-| Language | Swift 5 |
-| Design | Liquid Glass / Glassmorphism |
+| Category  | Stack                        |
+| --------- | ---------------------------- |
+| Platform  | iOS 26+                      |
+| Framework | SwiftUI                      |
+| Language  | Swift 5                      |
+| Design    | Liquid Glass / Glassmorphism |
 
 ## Install
 
