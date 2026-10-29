@@ -302,16 +302,6 @@
         }
       }
     },
-    "Delete Provider" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "删除供应商"
-          }
-        }
-      }
-    },
     "Discard Changes" : {
       "localizations" : {
         "zh-Hans" : {
@@ -682,6 +672,16 @@
       }
     },
     "Provider" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "供应商"
+          }
+        }
+      }
+    },
+    "Providers" : {
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {

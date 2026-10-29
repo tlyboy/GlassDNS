@@ -8,7 +8,6 @@ struct SidebarView: View {
     @State private var searchText = ""
     @State private var showingAddProvider = false
     @State private var showingSettings = false
-    @State private var accountToDelete: ProviderAccount?
     @AppStorage("collapsedAccountIDs") private var collapsedAccountIDsStorage = ""
 
     private var collapsedAccountIDs: Set<String> {
@@ -16,49 +15,25 @@ struct SidebarView: View {
         nonmutating set { collapsedAccountIDsStorage = newValue.sorted().joined(separator: "\n") }
     }
 
-    private enum SidebarRow: Identifiable {
-        case account(ProviderAccount)
-        case status(ZoneListViewModel, accountID: String)
-        case zone(ZoneSelection)
-
-        var id: String {
-            switch self {
-            case .account(let account): "account-\(account.id)"
-            case .status(_, let accountID): "status-\(accountID)"
-            case .zone(let zoneSelection): "zone-\(zoneSelection.accountID)-\(zoneSelection.zone.id)"
-            }
-        }
-    }
-
-    private var rows: [SidebarRow] {
-        providerSetupViewModel.accounts.flatMap { account -> [SidebarRow] in
-            let zoneList = zoneLists[account.id]
-            let zones = matchingZones(zoneList?.zones ?? [])
-            guard searchText.isEmpty || !zones.isEmpty else { return [] }
-            guard !searchText.isEmpty || !collapsedAccountIDs.contains(account.id) else { return [.account(account)] }
-            let status: [SidebarRow] = zoneList.map { $0.zones.isEmpty || $0.errorMessage != nil ? [.status($0, accountID: account.id)] : [] } ?? []
-            return [.account(account)] + status + zones.map { .zone(ZoneSelection(accountID: account.id, zone: $0)) }
-        }
-    }
-
     var body: some View {
         List(selection: $selection) {
-            Section {
-                ForEach(rows) { row in
-                    switch row {
-                    case .account(let account):
-                        accountRow(account)
-                    case .status(let zoneList, _):
-                        statusRow(zoneList)
-                            .moveDisabled(true)
-                    case .zone(let zoneSelection):
-                        NavigationLink(value: zoneSelection) {
-                            zoneRow(zoneSelection.zone)
+            ForEach(providerSetupViewModel.accounts) { account in
+                let zoneList = zoneLists[account.id]
+                let zones = matchingZones(zoneList?.zones ?? [])
+                if searchText.isEmpty || !zones.isEmpty {
+                    Section(isExpanded: isExpanded(account)) {
+                        if let zoneList {
+                            statusRow(zoneList)
                         }
-                        .moveDisabled(true)
+                        ForEach(zones) { zone in
+                            NavigationLink(value: ZoneSelection(accountID: account.id, zone: zone)) {
+                                zoneRow(zone)
+                            }
+                        }
+                    } header: {
+                        sectionHeader(account)
                     }
                 }
-                .onMove(perform: moveAccount)
             }
 
             Section {
@@ -101,7 +76,7 @@ struct SidebarView: View {
             AddProviderView(viewModel: providerSetupViewModel, isPresented: $showingAddProvider)
         }
         .sheet(isPresented: $showingSettings) {
-            SettingsSheet()
+            SettingsSheet(providerSetupViewModel: providerSetupViewModel)
         }
     }
 
@@ -126,60 +101,21 @@ struct SidebarView: View {
         }
     }
 
-    @ViewBuilder
-    private func accountRow(_ account: ProviderAccount) -> some View {
-        let isCollapsed = searchText.isEmpty && collapsedAccountIDs.contains(account.id)
-        Button {
-            withAnimation {
-                if isCollapsed {
+    private func isExpanded(_ account: ProviderAccount) -> Binding<Bool> {
+        Binding(
+            get: { !searchText.isEmpty || !collapsedAccountIDs.contains(account.id) },
+            set: { isExpanded in
+                if isExpanded {
                     collapsedAccountIDs.remove(account.id)
                 } else {
                     collapsedAccountIDs.insert(account.id)
                 }
             }
-        } label: {
-            HStack {
-                Label(account.displayName, systemImage: account.providerType.icon)
-                    .font(.headline)
-                    .foregroundStyle(Color.secondary)
-
-                Spacer()
-
-                Image(systemName: "chevron.right")
-                    .font(.footnote.weight(.semibold))
-                    .foregroundStyle(Color.primary)
-                    .rotationEffect(.degrees(isCollapsed ? 0 : 90))
-            }
-            .contentShape(Rectangle())
-        }
-        .buttonStyle(.plain)
-        .moveDisabled(!searchText.isEmpty)
-        .contextMenu {
-            Button("Delete Provider", systemImage: "trash", role: .destructive) {
-                accountToDelete = account
-            }
-        }
-        .confirmationDialog(
-            "Are you sure you want to delete this provider?",
-            isPresented: .init(
-                get: { accountToDelete?.id == account.id },
-                set: { if !$0 { accountToDelete = nil } }
-            ),
-            titleVisibility: .visible
-        ) {
-            Button("Delete", role: .destructive) {
-                providerSetupViewModel.deleteAccount(account)
-            }
-        }
+        )
     }
 
-    private func moveAccount(fromOffsets source: IndexSet, toOffset destination: Int) {
-        let rows = rows
-        guard let index = source.first, case .account(let account) = rows[index],
-              let accountIndex = providerSetupViewModel.accounts.firstIndex(of: account)
-        else { return }
-        let accountsBefore = rows[..<destination].count { if case .account = $0 { true } else { false } }
-        providerSetupViewModel.moveAccounts(fromOffsets: [accountIndex], toOffset: accountsBefore)
+    private func sectionHeader(_ account: ProviderAccount) -> some View {
+        Label(account.displayName, systemImage: account.providerType.icon)
     }
 
     private func zoneRow(_ zone: Zone) -> some View {

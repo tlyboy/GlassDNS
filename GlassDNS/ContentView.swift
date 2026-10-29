@@ -86,6 +86,8 @@ struct ContentView: View {
 // MARK: - Settings Sheet
 
 struct SettingsSheet: View {
+    @Bindable var providerSetupViewModel: ProviderSetupViewModel
+    @State private var accountToDelete: ProviderAccount?
     @AppStorage("appLanguage") private var appLanguage: String = ""
     @AppStorage("appAppearance") private var appearance: AppAppearance = .system
     @Environment(\.dismiss) private var dismiss
@@ -112,8 +114,43 @@ struct SettingsSheet: View {
                         }
                     }
                 }
+
+                if !providerSetupViewModel.accounts.isEmpty {
+                    Section("Providers") {
+                        ForEach(providerSetupViewModel.accounts) { account in
+                            Label {
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text(account.displayName)
+                                    Text(account.providerType.displayName)
+                                        .font(.caption)
+                                        .foregroundStyle(Color.secondary)
+                                }
+                            } icon: {
+                                Image(systemName: account.providerType.icon)
+                                    .foregroundStyle(Color.accentColor)
+                            }
+                        }
+                        .onDelete { offsets in
+                            accountToDelete = offsets.first.map { providerSetupViewModel.accounts[$0] }
+                        }
+                    }
+                }
             }
             .pickerStyle(.segmented)
+            .confirmationDialog(
+                "Are you sure you want to delete this provider?",
+                isPresented: .init(
+                    get: { accountToDelete != nil },
+                    set: { if !$0 { accountToDelete = nil } }
+                ),
+                titleVisibility: .visible
+            ) {
+                Button("Delete", role: .destructive) {
+                    if let accountToDelete {
+                        providerSetupViewModel.deleteAccount(accountToDelete)
+                    }
+                }
+            }
             .navigationTitle("Settings")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
