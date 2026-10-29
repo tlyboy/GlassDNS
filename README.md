@@ -56,7 +56,7 @@ Select your target device or simulator in Xcode, then press `Cmd + R` to build a
 - **Multi-provider** — Manage multiple DNS providers in one app
 - **Secure storage** — API keys stored in iOS Keychain, never leaves your device
 - **Bilingual** — English and Chinese (Simplified), switchable in settings
-- **Dark theme** — Deep blue glassmorphism UI with green accents
+- **Appearance** — Light, dark or follow the system, with native Liquid Glass and a blue accent
 
 ### Screenshots
 
