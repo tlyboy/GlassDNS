@@ -12,6 +12,7 @@ struct ContentView: View {
     @State private var selectedRecordID: DNSRecord.ID?
     @State private var zoneLists: [String: ZoneListViewModel] = [:]
     @State private var recordList: RecordListViewModel?
+    @State private var hasRecordChanges = false
 
     var body: some View {
         Group {
@@ -26,16 +27,23 @@ struct ContentView: View {
                         zoneLists: zoneLists,
                         selection: $selectedZone
                     )
+                    .disabled(hasRecordChanges)
                 } content: {
                     if let recordList {
                         RecordListView(viewModel: recordList, selection: $selectedRecordID)
                             .id(ObjectIdentifier(recordList))
+                            .disabled(hasRecordChanges)
                     } else {
                         ContentUnavailableView("Select a domain", systemImage: "globe")
                     }
                 } detail: {
                     if let recordList, let record = recordList.records.first(where: { $0.id == selectedRecordID }) {
-                        RecordDetailView(record: record, zoneID: recordList.zone.id, provider: recordList.provider) {
+                        RecordView(
+                            record: record,
+                            zoneID: recordList.zone.id,
+                            provider: recordList.provider,
+                            hasChanges: $hasRecordChanges
+                        ) { _ in
                             Task { await recordList.loadRecords(force: true) }
                         }
                         .id(record.id)

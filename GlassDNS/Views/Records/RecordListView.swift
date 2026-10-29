@@ -5,6 +5,7 @@ struct RecordListView: View {
     @Binding var selection: DNSRecord.ID?
     @State private var showingAddRecord = false
     @State private var recordToDelete: DNSRecord?
+    @Environment(\.isEnabled) private var isEnabled
 
     var body: some View {
         List(viewModel.filteredRecords, selection: $selection) { record in
@@ -59,12 +60,10 @@ struct RecordListView: View {
         }
         .sheet(isPresented: $showingAddRecord) {
             NavigationStack {
-                RecordEditView(
-                    viewModel: RecordEditViewModel(
-                        record: .new(zoneID: viewModel.zone.id, zoneName: viewModel.zone.name),
-                        zoneID: viewModel.zone.id,
-                        provider: viewModel.provider
-                    )
+                RecordView(
+                    record: .new(zoneID: viewModel.zone.id, zoneName: viewModel.zone.name),
+                    zoneID: viewModel.zone.id,
+                    provider: viewModel.provider
                 ) { _ in
                     showingAddRecord = false
                     Task { await viewModel.loadRecords(force: true) }
@@ -93,11 +92,11 @@ struct RecordListView: View {
         } message: {
             Text(viewModel.errorMessage ?? "")
         }
-        .focusedSceneValue(\.recordListActions, RecordListActions(
+        .focusedSceneValue(\.recordListActions, isEnabled ? RecordListActions(
             addRecord: { showingAddRecord = true },
             refresh: { Task { await viewModel.loadRecords(force: true) } },
             deleteSelected: selectedRecord.map { record in { recordToDelete = record } }
-        ))
+        ) : nil)
         .onAppear {
             Task { await viewModel.loadRecords() }
         }
