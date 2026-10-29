@@ -35,7 +35,7 @@ struct SidebarView: View {
             let zoneList = zoneLists[account.id]
             let zones = matchingZones(zoneList?.zones ?? [])
             guard searchText.isEmpty || !zones.isEmpty else { return [] }
-            guard !collapsedAccountIDs.contains(account.id) else { return [.account(account)] }
+            guard !searchText.isEmpty || !collapsedAccountIDs.contains(account.id) else { return [.account(account)] }
             let status: [SidebarRow] = zoneList.map { $0.zones.isEmpty || $0.errorMessage != nil ? [.status($0, accountID: account.id)] : [] } ?? []
             return [.account(account)] + status + zones.map { .zone(ZoneSelection(accountID: account.id, zone: $0)) }
         }
@@ -128,7 +128,7 @@ struct SidebarView: View {
 
     @ViewBuilder
     private func accountRow(_ account: ProviderAccount) -> some View {
-        let isCollapsed = collapsedAccountIDs.contains(account.id)
+        let isCollapsed = searchText.isEmpty && collapsedAccountIDs.contains(account.id)
         Button {
             withAnimation {
                 if isCollapsed {
