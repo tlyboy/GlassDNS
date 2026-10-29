@@ -37,6 +37,8 @@ private struct FilterChip: View {
                 .background(isSelected ? AnyShapeStyle(Color.accentColor) : AnyShapeStyle(.fill.tertiary))
                 .foregroundStyle(isSelected ? .white : Color.secondary)
                 .clipShape(Capsule())
+                .frame(minHeight: 44)
+                .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
     }
