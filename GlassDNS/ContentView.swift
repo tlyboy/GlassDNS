@@ -231,45 +231,24 @@ struct SettingsSheet: View {
 
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(spacing: AppTheme.spacing) {
-                    VStack(alignment: .leading, spacing: 10) {
-                        Text("Language")
-                            .font(.subheadline.weight(.medium))
-                            .foregroundStyle(Color.secondary)
-
-                        HStack(spacing: 8) {
-                            OptionButton(label: "System", isSelected: appLanguage.isEmpty) {
-                                appLanguage = ""
-                            }
-                            OptionButton(label: "English", isSelected: appLanguage == "en") {
-                                appLanguage = "en"
-                            }
-                            OptionButton(label: "中文", isSelected: appLanguage == "zh-Hans") {
-                                appLanguage = "zh-Hans"
-                            }
-                        }
+            Form {
+                Section("Language") {
+                    Picker("Language", selection: $appLanguage) {
+                        Text("System").tag("")
+                        Text("English").tag("en")
+                        Text("中文").tag("zh-Hans")
                     }
-                    .glassCard()
-
-                    VStack(alignment: .leading, spacing: 10) {
-                        Text("Appearance")
-                            .font(.subheadline.weight(.medium))
-                            .foregroundStyle(Color.secondary)
-
-                        HStack(spacing: 8) {
-                            ForEach(AppAppearance.allCases) { option in
-                                OptionButton(label: option.label, isSelected: appearance == option) {
-                                    appearance = option
-                                }
-                            }
-                        }
-                    }
-                    .glassCard()
                 }
-                .padding()
+
+                Section("Appearance") {
+                    Picker("Appearance", selection: $appearance) {
+                        ForEach(AppAppearance.allCases) { option in
+                            Text(option.label).tag(option)
+                        }
+                    }
+                }
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .pickerStyle(.segmented)
             .navigationTitle("Settings")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -281,28 +260,5 @@ struct SettingsSheet: View {
         }
         .environment(\.locale, activeLocale)
         .id(appLanguage)
-    }
-}
-
-private struct OptionButton: View {
-    let label: LocalizedStringKey
-    let isSelected: Bool
-    let action: () -> Void
-
-    var body: some View {
-        Button(action: action) {
-            Text(label)
-                .font(.subheadline.weight(.medium))
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 10)
-                .background(isSelected ? AnyShapeStyle(Color.accentColor.opacity(0.2)) : AnyShapeStyle(.fill.tertiary))
-                .foregroundStyle(isSelected ? Color.accentColor : Color.secondary)
-                .clipShape(RoundedRectangle(cornerRadius: 8))
-                .overlay(
-                    RoundedRectangle(cornerRadius: 8)
-                        .stroke(isSelected ? Color.accentColor.opacity(0.4) : Color.clear, lineWidth: 1)
-                )
-        }
-        .buttonStyle(.plain)
     }
 }

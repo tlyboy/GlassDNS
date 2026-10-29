@@ -41,20 +41,26 @@ struct AddProviderView: View {
 
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(spacing: AppTheme.largeSpacing) {
-                    providerTypeSection
-                    credentialsSection
+            Form {
+                Picker(selection: $selectedType) {
+                    ForEach(ProviderType.providerCases, id: \.rawValue) { type in
+                        Label(type.displayName, systemImage: type.icon).tag(type)
+                    }
+                } label: {
+                    Text("Provider")
+                }
+                .pickerStyle(.inline)
 
-                    if let error = viewModel.errorMessage {
-                        ErrorBanner(message: error) {
-                            viewModel.errorMessage = nil
-                        }
+                credentialsSection
+
+                if let error = viewModel.errorMessage {
+                    Section {
+                        Label(error, systemImage: "exclamationmark.triangle.fill")
+                            .font(.subheadline)
+                            .foregroundStyle(Color.red)
                     }
                 }
-                .padding(.top)
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
             .navigationTitle("Add Provider")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -84,141 +90,47 @@ struct AddProviderView: View {
         }
     }
 
-    private var providerTypeSection: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Text("Provider")
-                .font(.subheadline.weight(.medium))
-                .foregroundStyle(Color.secondary)
-                .padding(.horizontal)
-
-            VStack(spacing: 0) {
-                ForEach(ProviderType.providerCases, id: \.rawValue) { type in
-                    Button {
-                        withAnimation(.spring(response: 0.3)) {
-                            selectedType = type
-                        }
-                    } label: {
-                        HStack {
-                            Image(systemName: type.icon)
-                                .foregroundStyle(Color.accentColor)
-                                .frame(width: 28)
-
-                            Text(type.displayName)
-                                .foregroundStyle(Color.primary)
-
-                            Spacer()
-
-                            if selectedType == type {
-                                Image(systemName: "checkmark.circle.fill")
-                                    .foregroundStyle(Color.accentColor)
-                            }
-                        }
-                        .padding()
-                    }
-                }
-            }
-            .glassCard(padding: 0)
-            .padding(.horizontal)
-        }
-    }
-
     private var credentialsSection: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        Section {
+            LabeledContent("Display Name") {
+                TextField("Optional", text: $displayName)
+                    .multilineTextAlignment(.trailing)
+            }
+
+            switch selectedType {
+            case .cloudflare:
+                LabeledContent("API Token") {
+                    SecureField("Enter API Token", text: $apiToken)
+                        .multilineTextAlignment(.trailing)
+                }
+            case .aliyun:
+                LabeledContent("AccessKey ID") {
+                    TextField("Enter AccessKey ID", text: $accessKeyId)
+                        .multilineTextAlignment(.trailing)
+                }
+                LabeledContent("AccessKey Secret") {
+                    SecureField("Enter AccessKey Secret", text: $accessKeySecret)
+                        .multilineTextAlignment(.trailing)
+                }
+            case .example:
+                EmptyView()
+            }
+
+            if viewModel.isLoading {
+                HStack {
+                    ProgressView()
+                    Text("Verifying...")
+                        .foregroundStyle(Color.secondary)
+                }
+            }
+        } header: {
             Text("Credentials")
-                .font(.subheadline.weight(.medium))
-                .foregroundStyle(Color.secondary)
-                .padding(.horizontal)
-
-            VStack(spacing: 12) {
-                VStack(alignment: .leading, spacing: 6) {
-                    Text("Display Name")
-                        .font(.caption)
-                        .foregroundStyle(Color.secondary)
-
-                    TextField("Optional", text: $displayName)
-                        .textFieldStyle(.plain)
-                        .foregroundStyle(Color.primary)
-                        .autocorrectionDisabled()
-                        .textInputAutocapitalization(.never)
-                        .padding(12)
-                        .background(.fill.tertiary)
-                        .clipShape(RoundedRectangle(cornerRadius: 8))
-                }
-
-                switch selectedType {
-                case .cloudflare:
-                    cloudflareFields
-                case .aliyun:
-                    aliyunFields
-                case .example:
-                    Text("No credentials required. Example mode uses sample data for you to explore all features.")
-                        .font(.caption)
-                        .foregroundStyle(Color.secondary)
-                }
-
-                if viewModel.isLoading {
-                    HStack {
-                        ProgressView()
-                            .tint(Color.accentColor)
-                        Text("Verifying...")
-                            .font(.caption)
-                            .foregroundStyle(Color.secondary)
-                    }
-                }
-            }
-            .glassCard()
-            .padding(.horizontal)
-        }
-    }
-
-    private var cloudflareFields: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            Text("API Token")
-                .font(.caption)
-                .foregroundStyle(Color.secondary)
-
-            SecureField("Enter API Token", text: $apiToken)
-                .textFieldStyle(.plain)
-                .foregroundStyle(Color.primary)
-                .autocorrectionDisabled()
-                .textInputAutocapitalization(.never)
-                .padding(12)
-                .background(.fill.tertiary)
-                .clipShape(RoundedRectangle(cornerRadius: 8))
-        }
-    }
-
-    private var aliyunFields: some View {
-        VStack(spacing: 12) {
-            VStack(alignment: .leading, spacing: 6) {
-                Text("AccessKey ID")
-                    .font(.caption)
-                    .foregroundStyle(Color.secondary)
-
-                TextField("Enter AccessKey ID", text: $accessKeyId)
-                    .textFieldStyle(.plain)
-                    .foregroundStyle(Color.primary)
-                    .autocorrectionDisabled()
-                    .textInputAutocapitalization(.never)
-                    .padding(12)
-                    .background(.fill.tertiary)
-                    .clipShape(RoundedRectangle(cornerRadius: 8))
-            }
-
-            VStack(alignment: .leading, spacing: 6) {
-                Text("AccessKey Secret")
-                    .font(.caption)
-                    .foregroundStyle(Color.secondary)
-
-                SecureField("Enter AccessKey Secret", text: $accessKeySecret)
-                    .textFieldStyle(.plain)
-                    .foregroundStyle(Color.primary)
-                    .autocorrectionDisabled()
-                    .textInputAutocapitalization(.never)
-                    .padding(12)
-                    .background(.fill.tertiary)
-                    .clipShape(RoundedRectangle(cornerRadius: 8))
+        } footer: {
+            if selectedType == .example {
+                Text("No credentials required. Example mode uses sample data for you to explore all features.")
             }
         }
+        .autocorrectionDisabled()
+        .textInputAutocapitalization(.never)
     }
 }
