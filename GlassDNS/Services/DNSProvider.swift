@@ -42,6 +42,7 @@ extension Error {
 }
 
 nonisolated protocol DNSProvider: Sendable {
+    var supportsProxy: Bool { get }
     func verifyToken() async throws -> Bool
     func listZones() async throws -> [Zone]
     func listRecords(zoneID: String) async throws -> [DNSRecord]

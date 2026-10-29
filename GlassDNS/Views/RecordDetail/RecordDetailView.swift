@@ -93,7 +93,7 @@ struct RecordDetailView: View {
                 Text(TTLFormatter.format(record.ttl))
             }
 
-            if record.type.supportsProxy {
+            if provider.supportsProxy && record.type.supportsProxy {
                 LabeledContent("Proxy") {
                     Text((record.proxied ?? false) ? "Enabled" : "Disabled")
                 }

@@ -51,7 +51,7 @@ struct RecordEditView: View {
                 }
                 .pickerStyle(.menu)
 
-                if viewModel.type.supportsProxy {
+                if viewModel.showsProxy {
                     Toggle(isOn: $viewModel.proxied) {
                         Text("Proxy")
                         Text("Route traffic through Cloudflare network")

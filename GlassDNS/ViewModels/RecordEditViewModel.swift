@@ -24,6 +24,8 @@ final class RecordEditViewModel {
     private let zoneID: String
     private let provider: any DNSProvider
 
+    var showsProxy: Bool { provider.supportsProxy && type.supportsProxy }
+
     init(record: DNSRecord, zoneID: String, provider: any DNSProvider) {
         self.record = record
         self.zoneID = zoneID
@@ -84,7 +86,7 @@ final class RecordEditViewModel {
         updated.type = type
         updated.content = content
         updated.ttl = ttl
-        updated.proxied = type.supportsProxy ? proxied : false
+        updated.proxied = showsProxy ? proxied : false
         updated.priority = type.requiresPriority ? priority : nil
 
         do {
@@ -107,7 +109,7 @@ final class RecordEditViewModel {
         hasAttemptedSave = false
         hasEditedContentSinceTypeChange = false
 
-        if !type.supportsProxy {
+        if !showsProxy {
             proxied = false
         }
 

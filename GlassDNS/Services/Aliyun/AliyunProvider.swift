@@ -1,6 +1,7 @@
 import Foundation
 
 nonisolated struct AliyunProvider: DNSProvider, Sendable {
+    let supportsProxy = false
     private let api: AliyunAPI
 
     init(accessKeyId: String, accessKeySecret: String) {

@@ -1,6 +1,7 @@
 import Foundation
 
 nonisolated struct CloudflareProvider: DNSProvider, Sendable {
+    let supportsProxy = true
     private let api: CloudflareAPI
 
     init(token: String) {

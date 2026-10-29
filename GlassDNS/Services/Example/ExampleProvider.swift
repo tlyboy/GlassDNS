@@ -1,6 +1,7 @@
 import Foundation
 
 nonisolated final class ExampleProvider: DNSProvider, @unchecked Sendable {
+    let supportsProxy = true
     private let storage = ExampleStorage()
 
     func verifyToken() async throws -> Bool {
