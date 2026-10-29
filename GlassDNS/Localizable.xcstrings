@@ -102,6 +102,16 @@
     "AccessKey Secret" : {
 
     },
+    "Active" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正常"
+          }
+        }
+      }
+    },
     "Add" : {
       "localizations" : {
         "zh-Hans" : {
@@ -193,7 +203,14 @@
       }
     },
     "Auto" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自动"
+          }
+        }
+      }
     },
     "Cancel" : {
       "localizations" : {
@@ -411,6 +428,16 @@
     "ID" : {
 
     },
+    "Initializing" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "初始化中"
+          }
+        }
+      }
+    },
     "Invalid credentials format." : {
 
     },
@@ -460,6 +487,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "修改时间"
+          }
+        }
+      }
+    },
+    "Moved" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已迁出"
           }
         }
       }
@@ -570,6 +607,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "可选"
+          }
+        }
+      }
+    },
+    "Pending" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "待生效"
           }
         }
       }

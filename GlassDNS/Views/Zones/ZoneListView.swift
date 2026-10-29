@@ -56,12 +56,22 @@ struct ZoneListView: View {
                         .fill(zone.isActive ? Color.accentColor : Color.secondary)
                         .frame(width: 6, height: 6)
 
-                    Text(zone.isActive ? "Active" : zone.status.capitalized)
+                    statusText(zone)
                         .font(.caption)
                         .foregroundStyle(Color.secondary)
                 }
             }
 
+        }
+    }
+
+    private func statusText(_ zone: Zone) -> Text {
+        switch zone.status {
+        case "active": Text("Active")
+        case "pending": Text("Pending")
+        case "initializing": Text("Initializing")
+        case "moved": Text("Moved")
+        default: Text(zone.status.capitalized)
         }
     }
 }

@@ -48,7 +48,7 @@ nonisolated struct DNSRecord: Codable, Identifiable, Sendable, Hashable {
 
     var isLocked: Bool { locked ?? false }
 
-    var displayTTL: String {
+    var displayTTL: LocalizedStringResource {
         if ttl == 1 { return "Auto" }
         if ttl < 60 { return "\(ttl)s" }
         if ttl < 3600 { return "\(ttl / 60)m" }
