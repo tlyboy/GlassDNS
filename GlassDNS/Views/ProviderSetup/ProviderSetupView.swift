@@ -55,7 +55,7 @@ struct ProviderSetupView: View {
                 Button {
                     showingSettings = true
                 } label: {
-                    Image(systemName: "gearshape")
+                    Label("Settings", systemImage: "gearshape")
                         .foregroundStyle(Color.accentColor)
                 }
             }

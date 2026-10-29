@@ -20,7 +20,7 @@ struct ContentView: View {
                                 Button {
                                     showingProviderManager = true
                                 } label: {
-                                    Image(systemName: "server.rack")
+                                    Label("DNS Providers", systemImage: "server.rack")
                                         .foregroundStyle(Color.accentColor)
                                 }
                             }
@@ -28,7 +28,7 @@ struct ContentView: View {
                                 Button {
                                     showingSettings = true
                                 } label: {
-                                    Image(systemName: "gearshape")
+                                    Label("Settings", systemImage: "gearshape")
                                         .foregroundStyle(Color.accentColor)
                                 }
                             }
@@ -170,7 +170,7 @@ struct ProviderManagerSheet: View {
                     Button {
                         showingAddSheet = true
                     } label: {
-                        Image(systemName: "plus")
+                        Label("Add Provider", systemImage: "plus")
                             .foregroundStyle(Color.accentColor)
                     }
                 }

@@ -51,7 +51,7 @@ struct RecordListView: View {
                 Button {
                     showingAddRecord = true
                 } label: {
-                    Image(systemName: "plus")
+                    Label("Add Record", systemImage: "plus")
                         .foregroundStyle(Color.accentColor)
                 }
             }
