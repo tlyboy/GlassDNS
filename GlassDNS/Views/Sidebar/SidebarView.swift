@@ -21,8 +21,9 @@ struct SidebarView: View {
                             statusRow(zoneList)
                         }
                         ForEach(zones) { zone in
-                            zoneRow(zone)
-                                .tag(ZoneSelection(accountID: account.id, zone: zone))
+                            NavigationLink(value: ZoneSelection(accountID: account.id, zone: zone)) {
+                                zoneRow(zone)
+                            }
                         }
                     } header: {
                         sectionHeader(account)

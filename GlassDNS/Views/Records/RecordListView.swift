@@ -8,7 +8,10 @@ struct RecordListView: View {
 
     var body: some View {
         List(viewModel.filteredRecords, selection: $selection) { record in
-            RecordRowView(record: record)
+            NavigationLink(value: record.id) {
+                RecordRowView(record: record)
+            }
+            .tint(Color(.systemGray4))
             .swipeActions(edge: .trailing) {
                 Button(role: .destructive) {
                     recordToDelete = record
