@@ -64,7 +64,7 @@ struct ProviderSetupView: View {
             AddProviderView(viewModel: viewModel, isPresented: $showingAddSheet)
         }
         .sheet(isPresented: $showingSettings) {
-            SettingsSheet(providerSetupViewModel: viewModel)
+            SettingsSheet()
         }
     }
 }

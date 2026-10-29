@@ -471,16 +471,6 @@
         }
       }
     },
-    "Manage Providers" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "管理供应商"
-          }
-        }
-      }
-    },
     "Metadata" : {
       "localizations" : {
         "zh-Hans" : {
@@ -692,16 +682,6 @@
       }
     },
     "Provider" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "供应商"
-          }
-        }
-      }
-    },
-    "Providers" : {
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {

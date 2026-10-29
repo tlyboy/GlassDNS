@@ -50,12 +50,15 @@ struct SidebarView: View {
                         accountRow(account)
                     case .status(let zoneList, _):
                         statusRow(zoneList)
+                            .moveDisabled(true)
                     case .zone(let zoneSelection):
                         NavigationLink(value: zoneSelection) {
                             zoneRow(zoneSelection.zone)
                         }
+                        .moveDisabled(true)
                     }
                 }
+                .onMove(perform: moveAccount)
             }
 
             Section {
@@ -98,7 +101,7 @@ struct SidebarView: View {
             AddProviderView(viewModel: providerSetupViewModel, isPresented: $showingAddProvider)
         }
         .sheet(isPresented: $showingSettings) {
-            SettingsSheet(providerSetupViewModel: providerSetupViewModel)
+            SettingsSheet()
         }
     }
 
@@ -150,6 +153,7 @@ struct SidebarView: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        .moveDisabled(!searchText.isEmpty)
         .contextMenu {
             Button("Delete Provider", systemImage: "trash", role: .destructive) {
                 accountToDelete = account
@@ -167,6 +171,15 @@ struct SidebarView: View {
                 providerSetupViewModel.deleteAccount(account)
             }
         }
+    }
+
+    private func moveAccount(fromOffsets source: IndexSet, toOffset destination: Int) {
+        let rows = rows
+        guard let index = source.first, case .account(let account) = rows[index],
+              let accountIndex = providerSetupViewModel.accounts.firstIndex(of: account)
+        else { return }
+        let accountsBefore = rows[..<destination].count { if case .account = $0 { true } else { false } }
+        providerSetupViewModel.moveAccounts(fromOffsets: [accountIndex], toOffset: accountsBefore)
     }
 
     private func zoneRow(_ zone: Zone) -> some View {
