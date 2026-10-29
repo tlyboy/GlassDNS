@@ -9,24 +9,51 @@ struct SidebarView: View {
     @State private var showingAddProvider = false
     @State private var showingSettings = false
     @State private var accountToDelete: ProviderAccount?
+    @AppStorage("collapsedAccountIDs") private var collapsedAccountIDsStorage = ""
+
+    private var collapsedAccountIDs: Set<String> {
+        get { Set(collapsedAccountIDsStorage.split(separator: "\n").map(String.init)) }
+        nonmutating set { collapsedAccountIDsStorage = newValue.sorted().joined(separator: "\n") }
+    }
+
+    private enum SidebarRow: Identifiable {
+        case account(ProviderAccount)
+        case status(ZoneListViewModel, accountID: String)
+        case zone(ZoneSelection)
+
+        var id: String {
+            switch self {
+            case .account(let account): "account-\(account.id)"
+            case .status(_, let accountID): "status-\(accountID)"
+            case .zone(let zoneSelection): "zone-\(zoneSelection.accountID)-\(zoneSelection.zone.id)"
+            }
+        }
+    }
+
+    private var rows: [SidebarRow] {
+        providerSetupViewModel.accounts.flatMap { account -> [SidebarRow] in
+            let zoneList = zoneLists[account.id]
+            let zones = matchingZones(zoneList?.zones ?? [])
+            guard searchText.isEmpty || !zones.isEmpty else { return [] }
+            guard !collapsedAccountIDs.contains(account.id) else { return [.account(account)] }
+            let status: [SidebarRow] = zoneList.map { $0.zones.isEmpty || $0.errorMessage != nil ? [.status($0, accountID: account.id)] : [] } ?? []
+            return [.account(account)] + status + zones.map { .zone(ZoneSelection(accountID: account.id, zone: $0)) }
+        }
+    }
 
     var body: some View {
         List(selection: $selection) {
-            ForEach(providerSetupViewModel.accounts) { account in
-                let zoneList = zoneLists[account.id]
-                let zones = matchingZones(zoneList?.zones ?? [])
-                if searchText.isEmpty || !zones.isEmpty {
-                    Section {
-                        if let zoneList {
-                            statusRow(zoneList)
+            Section {
+                ForEach(rows) { row in
+                    switch row {
+                    case .account(let account):
+                        accountRow(account)
+                    case .status(let zoneList, _):
+                        statusRow(zoneList)
+                    case .zone(let zoneSelection):
+                        NavigationLink(value: zoneSelection) {
+                            zoneRow(zoneSelection.zone)
                         }
-                        ForEach(zones) { zone in
-                            NavigationLink(value: ZoneSelection(accountID: account.id, zone: zone)) {
-                                zoneRow(zone)
-                            }
-                        }
-                    } header: {
-                        sectionHeader(account)
                     }
                 }
             }
@@ -39,6 +66,7 @@ struct SidebarView: View {
                 }
             }
         }
+        .listStyle(.sidebar)
         .overlay {
             if !searchText.isEmpty && zoneLists.values.allSatisfy({ matchingZones($0.zones).isEmpty }) {
                 ContentUnavailableView("No Matching Domains", systemImage: "globe")
@@ -62,6 +90,9 @@ struct SidebarView: View {
                         .foregroundStyle(Color.accentColor)
                 }
             }
+        }
+        .onChange(of: providerSetupViewModel.accounts.map(\.id)) { _, accountIDs in
+            collapsedAccountIDs.formIntersection(accountIDs)
         }
         .sheet(isPresented: $showingAddProvider) {
             AddProviderView(viewModel: providerSetupViewModel, isPresented: $showingAddProvider)
@@ -92,19 +123,36 @@ struct SidebarView: View {
         }
     }
 
-    private func sectionHeader(_ account: ProviderAccount) -> some View {
-        HStack {
-            Label(account.displayName, systemImage: account.providerType.icon)
-
-            Spacer()
-
-            Menu {
-                Button("Delete Provider", systemImage: "trash", role: .destructive) {
-                    accountToDelete = account
+    @ViewBuilder
+    private func accountRow(_ account: ProviderAccount) -> some View {
+        let isCollapsed = collapsedAccountIDs.contains(account.id)
+        Button {
+            withAnimation {
+                if isCollapsed {
+                    collapsedAccountIDs.remove(account.id)
+                } else {
+                    collapsedAccountIDs.insert(account.id)
                 }
-            } label: {
-                Label("More", systemImage: "ellipsis.circle")
-                    .labelStyle(.iconOnly)
+            }
+        } label: {
+            HStack {
+                Label(account.displayName, systemImage: account.providerType.icon)
+                    .font(.headline)
+                    .foregroundStyle(Color.secondary)
+
+                Spacer()
+
+                Image(systemName: "chevron.right")
+                    .font(.footnote.weight(.semibold))
+                    .foregroundStyle(Color.primary)
+                    .rotationEffect(.degrees(isCollapsed ? 0 : 90))
+            }
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .contextMenu {
+            Button("Delete Provider", systemImage: "trash", role: .destructive) {
+                accountToDelete = account
             }
         }
         .confirmationDialog(
