@@ -70,11 +70,8 @@ struct ContentView: View {
     }
 
     private func makeRecordList() -> RecordListViewModel? {
-        guard let selectedZone,
-              let account = providerSetupViewModel.accounts.first(where: { $0.id == selectedZone.accountID }),
-              let provider = providerSetupViewModel.providerFor(account: account)
-        else { return nil }
-        return RecordListViewModel(zone: selectedZone.zone, provider: provider)
+        guard let selectedZone, let zoneList = zoneLists[selectedZone.accountID] else { return nil }
+        return RecordListViewModel(zone: selectedZone.zone, provider: zoneList.provider)
     }
 }
 

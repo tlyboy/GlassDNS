@@ -7,7 +7,7 @@ final class ZoneListViewModel {
     var isLoading = false
     var errorMessage: String?
 
-    private let provider: any DNSProvider
+    let provider: any DNSProvider
     @ObservationIgnored
     private var loadTask: Task<[Zone], Error>?
 
