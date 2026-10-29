@@ -240,6 +240,7 @@ struct ProviderManagerSheet: View {
 
 struct SettingsSheet: View {
     @AppStorage("appLanguage") private var appLanguage: String = ""
+    @AppStorage("appAppearance") private var appearance: AppAppearance = .system
     @Environment(\.dismiss) private var dismiss
 
     private var activeLocale: Locale {
@@ -256,14 +257,29 @@ struct SettingsSheet: View {
                             .foregroundStyle(Color.secondary)
 
                         HStack(spacing: 8) {
-                            LanguageButton(label: "System", isSelected: appLanguage.isEmpty) {
+                            OptionButton(label: "System", isSelected: appLanguage.isEmpty) {
                                 appLanguage = ""
                             }
-                            LanguageButton(label: "English", isSelected: appLanguage == "en") {
+                            OptionButton(label: "English", isSelected: appLanguage == "en") {
                                 appLanguage = "en"
                             }
-                            LanguageButton(label: "中文", isSelected: appLanguage == "zh-Hans") {
+                            OptionButton(label: "中文", isSelected: appLanguage == "zh-Hans") {
                                 appLanguage = "zh-Hans"
+                            }
+                        }
+                    }
+                    .glassCard()
+
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text("Appearance")
+                            .font(.subheadline.weight(.medium))
+                            .foregroundStyle(Color.secondary)
+
+                        HStack(spacing: 8) {
+                            ForEach(AppAppearance.allCases) { option in
+                                OptionButton(label: option.label, isSelected: appearance == option) {
+                                    appearance = option
+                                }
                             }
                         }
                     }
@@ -286,8 +302,8 @@ struct SettingsSheet: View {
     }
 }
 
-private struct LanguageButton: View {
-    let label: String
+private struct OptionButton: View {
+    let label: LocalizedStringKey
     let isSelected: Bool
     let action: () -> Void
 
