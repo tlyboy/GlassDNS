@@ -11,15 +11,15 @@ struct ProviderSetupView: View {
 
             Image(systemName: "cloud.fill")
                 .font(.system(size: 64))
-                .foregroundStyle(Color.appAccent.opacity(0.6))
+                .foregroundStyle(Color.accentColor.opacity(0.6))
 
             Text("Add DNS Provider")
                 .font(.title2.weight(.semibold))
-                .foregroundStyle(Color.appText)
+                .foregroundStyle(Color.primary)
 
             Text("Connect your DNS provider to start managing domain records.")
                 .font(.subheadline)
-                .foregroundStyle(Color.appTextSecondary)
+                .foregroundStyle(Color.secondary)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 40)
 
@@ -29,7 +29,7 @@ struct ProviderSetupView: View {
                 Label("Add Provider", systemImage: "plus.circle.fill")
                     .font(.headline)
             }
-            .buttonStyle(GlassButtonStyle(isProminent: true))
+            .buttonStyle(.glassProminent)
             .padding(.top, AppTheme.spacing)
 
             Button {
@@ -44,12 +44,11 @@ struct ProviderSetupView: View {
                 Label("Try Example", systemImage: "play.circle")
                     .font(.subheadline)
             }
-            .buttonStyle(GlassButtonStyle(isProminent: false))
+            .buttonStyle(.glass)
 
             Spacer()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.appBackground.ignoresSafeArea())
         .navigationTitle("GlassDNS")
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
@@ -57,7 +56,7 @@ struct ProviderSetupView: View {
                     showingSettings = true
                 } label: {
                     Image(systemName: "gearshape")
-                        .foregroundStyle(Color.appAccent)
+                        .foregroundStyle(Color.accentColor)
                 }
             }
         }

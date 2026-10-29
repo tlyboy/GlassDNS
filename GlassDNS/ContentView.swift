@@ -21,7 +21,7 @@ struct ContentView: View {
                                     showingProviderManager = true
                                 } label: {
                                     Image(systemName: "server.rack")
-                                        .foregroundStyle(Color.appAccent)
+                                        .foregroundStyle(Color.accentColor)
                                 }
                             }
                             ToolbarItem(placement: .topBarTrailing) {
@@ -29,7 +29,7 @@ struct ContentView: View {
                                     showingSettings = true
                                 } label: {
                                     Image(systemName: "gearshape")
-                                        .foregroundStyle(Color.appAccent)
+                                        .foregroundStyle(Color.accentColor)
                                 }
                             }
                         }
@@ -55,8 +55,6 @@ struct ContentView: View {
         .sheet(isPresented: $showingSettings) {
             SettingsSheet()
         }
-        .background(Color.appBackground.ignoresSafeArea())
-        .preferredColorScheme(.dark)
         .onChange(of: providerSetupViewModel.accounts) {
             if providerSetupViewModel.accounts.isEmpty {
                 deactivate()
@@ -114,7 +112,6 @@ struct RecordListScreen: View {
             } else {
                 LoadingView()
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .background(Color.appBackground.ignoresSafeArea())
             }
         }
         .navigationDestination(for: DNSRecord.self) { record in
@@ -158,10 +155,10 @@ struct ProviderManagerSheet: View {
                         VStack(spacing: 12) {
                             Image(systemName: "cloud.fill")
                                 .font(.system(size: 40))
-                                .foregroundStyle(Color.appTextSecondary.opacity(0.5))
+                                .foregroundStyle(Color.secondary.opacity(0.5))
                             Text("No Providers")
                                 .font(.headline)
-                                .foregroundStyle(Color.appTextSecondary)
+                                .foregroundStyle(Color.secondary)
                         }
                         .padding(.top, 60)
                     }
@@ -169,20 +166,19 @@ struct ProviderManagerSheet: View {
                 .padding()
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Color.appBackground.ignoresSafeArea())
             .navigationTitle("DNS Providers")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Close") { dismiss() }
-                        .foregroundStyle(Color.appTextSecondary)
+                        .foregroundStyle(Color.secondary)
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
                         showingAddSheet = true
                     } label: {
                         Image(systemName: "plus")
-                            .foregroundStyle(Color.appAccent)
+                            .foregroundStyle(Color.accentColor)
                     }
                 }
             }
@@ -210,19 +206,19 @@ struct ProviderManagerSheet: View {
         HStack(spacing: 14) {
             Image(systemName: account.providerType.icon)
                 .font(.title2)
-                .foregroundStyle(Color.appAccent)
+                .foregroundStyle(Color.accentColor)
                 .frame(width: 44, height: 44)
-                .background(Color.appAccent.opacity(0.12))
+                .background(Color.accentColor.opacity(0.12))
                 .clipShape(RoundedRectangle(cornerRadius: 10))
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(account.displayName)
                     .font(.headline)
-                    .foregroundStyle(Color.appText)
+                    .foregroundStyle(Color.primary)
 
                 Text(account.providerType.displayName)
                     .font(.caption)
-                    .foregroundStyle(Color.appTextSecondary)
+                    .foregroundStyle(Color.secondary)
             }
 
             Spacer()
@@ -232,7 +228,7 @@ struct ProviderManagerSheet: View {
             } label: {
                 Image(systemName: "trash")
                     .font(.body)
-                    .foregroundStyle(Color.appDanger)
+                    .foregroundStyle(Color.red)
                     .frame(width: 36, height: 36)
             }
         }
@@ -257,7 +253,7 @@ struct SettingsSheet: View {
                     VStack(alignment: .leading, spacing: 10) {
                         Text("Language")
                             .font(.subheadline.weight(.medium))
-                            .foregroundStyle(Color.appTextSecondary)
+                            .foregroundStyle(Color.secondary)
 
                         HStack(spacing: 8) {
                             LanguageButton(label: "System", isSelected: appLanguage.isEmpty) {
@@ -276,13 +272,12 @@ struct SettingsSheet: View {
                 .padding()
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Color.appBackground.ignoresSafeArea())
             .navigationTitle("Settings")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Close") { dismiss() }
-                        .foregroundStyle(Color.appTextSecondary)
+                        .foregroundStyle(Color.secondary)
                 }
             }
         }
@@ -302,12 +297,12 @@ private struct LanguageButton: View {
                 .font(.subheadline.weight(.medium))
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 10)
-                .background(isSelected ? Color.appAccent.opacity(0.2) : Color.white.opacity(0.05))
-                .foregroundStyle(isSelected ? Color.appAccent : Color.appTextSecondary)
+                .background(isSelected ? AnyShapeStyle(Color.accentColor.opacity(0.2)) : AnyShapeStyle(.fill.tertiary))
+                .foregroundStyle(isSelected ? Color.accentColor : Color.secondary)
                 .clipShape(RoundedRectangle(cornerRadius: 8))
                 .overlay(
                     RoundedRectangle(cornerRadius: 8)
-                        .stroke(isSelected ? Color.appAccent.opacity(0.4) : Color.clear, lineWidth: 1)
+                        .stroke(isSelected ? Color.accentColor.opacity(0.4) : Color.clear, lineWidth: 1)
                 )
         }
         .buttonStyle(.plain)

@@ -7,14 +7,14 @@ struct LoadingView: View {
         VStack(spacing: AppTheme.spacing) {
             ForEach(0..<3, id: \.self) { index in
                 RoundedRectangle(cornerRadius: AppTheme.smallCornerRadius)
-                    .fill(Color.white.opacity(0.06))
+                    .fill(.fill.tertiary)
                     .frame(height: 60)
                     .overlay(
                         GeometryReader { geometry in
                             LinearGradient(
                                 colors: [
                                     .clear,
-                                    Color.white.opacity(0.08),
+                                    Color.primary.opacity(0.06),
                                     .clear,
                                 ],
                                 startPoint: .leading,

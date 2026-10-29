@@ -26,7 +26,6 @@ struct RecordDetailView: View {
             .padding()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.appBackground.ignoresSafeArea())
         .navigationTitle("Record Details")
         .navigationBarTitleDisplayMode(.inline)
         .refreshable {
@@ -38,7 +37,7 @@ struct RecordDetailView: View {
                     showingEdit = true
                 } label: {
                     Text("Edit")
-                        .foregroundStyle(Color.appAccent)
+                        .foregroundStyle(Color.accentColor)
                 }
             }
         }
@@ -73,11 +72,11 @@ struct RecordDetailView: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text(record.type.rawValue)
                     .font(.title2.weight(.bold))
-                    .foregroundStyle(Color.appText)
+                    .foregroundStyle(Color.primary)
 
                 Text(record.name)
                     .font(.subheadline)
-                    .foregroundStyle(Color.appTextSecondary)
+                    .foregroundStyle(Color.secondary)
                     .lineLimit(2)
             }
 
@@ -92,7 +91,7 @@ struct RecordDetailView: View {
 
             Text(record.content)
                 .font(.system(.body, design: .monospaced))
-                .foregroundStyle(Color.appText)
+                .foregroundStyle(Color.primary)
                 .textSelection(.enabled)
                 .frame(maxWidth: .infinity, alignment: .leading)
         }
@@ -141,20 +140,20 @@ struct RecordDetailView: View {
     private func sectionTitle(_ title: LocalizedStringResource) -> some View {
         Text(title)
             .font(.subheadline.weight(.semibold))
-            .foregroundStyle(Color.appAccent)
+            .foregroundStyle(Color.accentColor)
     }
 
     private func detailRow(_ label: LocalizedStringResource, value: String) -> some View {
         HStack {
             Text(label)
                 .font(.subheadline)
-                .foregroundStyle(Color.appTextSecondary)
+                .foregroundStyle(Color.secondary)
 
             Spacer()
 
             Text(value)
                 .font(.subheadline)
-                .foregroundStyle(Color.appText)
+                .foregroundStyle(Color.primary)
                 .lineLimit(1)
                 .textSelection(.enabled)
         }
@@ -164,13 +163,13 @@ struct RecordDetailView: View {
         HStack {
             Text(label)
                 .font(.subheadline)
-                .foregroundStyle(Color.appTextSecondary)
+                .foregroundStyle(Color.secondary)
 
             Spacer()
 
             Text(localizedValue)
                 .font(.subheadline)
-                .foregroundStyle(Color.appText)
+                .foregroundStyle(Color.primary)
                 .lineLimit(1)
         }
     }

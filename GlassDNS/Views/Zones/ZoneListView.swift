@@ -22,7 +22,6 @@ struct ZoneListView: View {
             .padding(.top, AppTheme.spacing)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.appBackground.ignoresSafeArea())
         .navigationTitle("Domains")
         .searchable(text: $viewModel.searchText, prompt: "Search domains")
         .refreshable {
@@ -45,11 +44,11 @@ struct ZoneListView: View {
         VStack(spacing: 12) {
             Image(systemName: "globe")
                 .font(.system(size: 40))
-                .foregroundStyle(Color.appTextSecondary.opacity(0.5))
+                .foregroundStyle(Color.secondary.opacity(0.5))
 
             Text(viewModel.searchText.isEmpty ? "No Domains" : "No Matching Domains")
                 .font(.headline)
-                .foregroundStyle(Color.appTextSecondary)
+                .foregroundStyle(Color.secondary)
         }
         .padding(.top, 60)
     }
@@ -58,24 +57,24 @@ struct ZoneListView: View {
         HStack(spacing: 14) {
             Image(systemName: "globe")
                 .font(.title3)
-                .foregroundStyle(Color.appAccent)
+                .foregroundStyle(Color.accentColor)
                 .frame(width: 40, height: 40)
-                .background(Color.appAccent.opacity(0.12))
+                .background(Color.accentColor.opacity(0.12))
                 .clipShape(RoundedRectangle(cornerRadius: 10))
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(zone.name)
                     .font(.headline)
-                    .foregroundStyle(Color.appText)
+                    .foregroundStyle(Color.primary)
 
                 HStack(spacing: 6) {
                     Circle()
-                        .fill(zone.isActive ? Color.appAccent : Color.appTextSecondary)
+                        .fill(zone.isActive ? Color.accentColor : Color.secondary)
                         .frame(width: 6, height: 6)
 
                     Text(zone.isActive ? "Active" : zone.status.capitalized)
                         .font(.caption)
-                        .foregroundStyle(Color.appTextSecondary)
+                        .foregroundStyle(Color.secondary)
                 }
             }
 
@@ -83,7 +82,7 @@ struct ZoneListView: View {
 
             Image(systemName: "chevron.right")
                 .font(.caption.weight(.semibold))
-                .foregroundStyle(Color.appTextSecondary)
+                .foregroundStyle(Color.secondary)
         }
         .glassCard()
     }

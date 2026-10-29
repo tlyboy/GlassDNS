@@ -55,7 +55,6 @@ struct AddProviderView: View {
                 .padding(.top)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Color.appBackground.ignoresSafeArea())
             .navigationTitle("Add Provider")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -63,7 +62,7 @@ struct AddProviderView: View {
                     Button("Cancel") {
                         isPresented = false
                     }
-                    .foregroundStyle(Color.appTextSecondary)
+                    .foregroundStyle(Color.secondary)
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Add") {
@@ -78,7 +77,7 @@ struct AddProviderView: View {
                             }
                         }
                     }
-                    .foregroundStyle(Color.appAccent)
+                    .foregroundStyle(Color.accentColor)
                     .disabled(!isFormValid || viewModel.isLoading)
                 }
             }
@@ -89,7 +88,7 @@ struct AddProviderView: View {
         VStack(alignment: .leading, spacing: 10) {
             Text("Provider")
                 .font(.subheadline.weight(.medium))
-                .foregroundStyle(Color.appTextSecondary)
+                .foregroundStyle(Color.secondary)
                 .padding(.horizontal)
 
             VStack(spacing: 0) {
@@ -101,17 +100,17 @@ struct AddProviderView: View {
                     } label: {
                         HStack {
                             Image(systemName: type.icon)
-                                .foregroundStyle(Color.appAccent)
+                                .foregroundStyle(Color.accentColor)
                                 .frame(width: 28)
 
                             Text(type.displayName)
-                                .foregroundStyle(Color.appText)
+                                .foregroundStyle(Color.primary)
 
                             Spacer()
 
                             if selectedType == type {
                                 Image(systemName: "checkmark.circle.fill")
-                                    .foregroundStyle(Color.appAccent)
+                                    .foregroundStyle(Color.accentColor)
                             }
                         }
                         .padding()
@@ -127,22 +126,22 @@ struct AddProviderView: View {
         VStack(alignment: .leading, spacing: 10) {
             Text("Credentials")
                 .font(.subheadline.weight(.medium))
-                .foregroundStyle(Color.appTextSecondary)
+                .foregroundStyle(Color.secondary)
                 .padding(.horizontal)
 
             VStack(spacing: 12) {
                 VStack(alignment: .leading, spacing: 6) {
                     Text("Display Name")
                         .font(.caption)
-                        .foregroundStyle(Color.appTextSecondary)
+                        .foregroundStyle(Color.secondary)
 
                     TextField("Optional", text: $displayName)
                         .textFieldStyle(.plain)
-                        .foregroundStyle(Color.appText)
+                        .foregroundStyle(Color.primary)
                         .autocorrectionDisabled()
                         .textInputAutocapitalization(.never)
                         .padding(12)
-                        .background(Color.white.opacity(0.05))
+                        .background(.fill.tertiary)
                         .clipShape(RoundedRectangle(cornerRadius: 8))
                 }
 
@@ -154,16 +153,16 @@ struct AddProviderView: View {
                 case .example:
                     Text("No credentials required. Example mode uses sample data for you to explore all features.")
                         .font(.caption)
-                        .foregroundStyle(Color.appTextSecondary)
+                        .foregroundStyle(Color.secondary)
                 }
 
                 if viewModel.isLoading {
                     HStack {
                         ProgressView()
-                            .tint(Color.appAccent)
+                            .tint(Color.accentColor)
                         Text("Verifying...")
                             .font(.caption)
-                            .foregroundStyle(Color.appTextSecondary)
+                            .foregroundStyle(Color.secondary)
                     }
                 }
             }
@@ -176,15 +175,15 @@ struct AddProviderView: View {
         VStack(alignment: .leading, spacing: 6) {
             Text("API Token")
                 .font(.caption)
-                .foregroundStyle(Color.appTextSecondary)
+                .foregroundStyle(Color.secondary)
 
             SecureField("Enter API Token", text: $apiToken)
                 .textFieldStyle(.plain)
-                .foregroundStyle(Color.appText)
+                .foregroundStyle(Color.primary)
                 .autocorrectionDisabled()
                 .textInputAutocapitalization(.never)
                 .padding(12)
-                .background(Color.white.opacity(0.05))
+                .background(.fill.tertiary)
                 .clipShape(RoundedRectangle(cornerRadius: 8))
         }
     }
@@ -194,30 +193,30 @@ struct AddProviderView: View {
             VStack(alignment: .leading, spacing: 6) {
                 Text("AccessKey ID")
                     .font(.caption)
-                    .foregroundStyle(Color.appTextSecondary)
+                    .foregroundStyle(Color.secondary)
 
                 TextField("Enter AccessKey ID", text: $accessKeyId)
                     .textFieldStyle(.plain)
-                    .foregroundStyle(Color.appText)
+                    .foregroundStyle(Color.primary)
                     .autocorrectionDisabled()
                     .textInputAutocapitalization(.never)
                     .padding(12)
-                    .background(Color.white.opacity(0.05))
+                    .background(.fill.tertiary)
                     .clipShape(RoundedRectangle(cornerRadius: 8))
             }
 
             VStack(alignment: .leading, spacing: 6) {
                 Text("AccessKey Secret")
                     .font(.caption)
-                    .foregroundStyle(Color.appTextSecondary)
+                    .foregroundStyle(Color.secondary)
 
                 SecureField("Enter AccessKey Secret", text: $accessKeySecret)
                     .textFieldStyle(.plain)
-                    .foregroundStyle(Color.appText)
+                    .foregroundStyle(Color.primary)
                     .autocorrectionDisabled()
                     .textInputAutocapitalization(.never)
                     .padding(12)
-                    .background(Color.white.opacity(0.05))
+                    .background(.fill.tertiary)
                     .clipShape(RoundedRectangle(cornerRadius: 8))
             }
         }

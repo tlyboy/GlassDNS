@@ -10,11 +10,11 @@ struct ErrorBanner: View {
         if isVisible {
             HStack(spacing: 10) {
                 Image(systemName: "exclamationmark.triangle.fill")
-                    .foregroundStyle(Color.appDanger)
+                    .foregroundStyle(Color.red)
 
                 Text(message)
                     .font(.subheadline)
-                    .foregroundStyle(Color.appText)
+                    .foregroundStyle(Color.primary)
                     .lineLimit(2)
 
                 Spacer()
@@ -24,15 +24,15 @@ struct ErrorBanner: View {
                 } label: {
                     Image(systemName: "xmark")
                         .font(.caption.weight(.bold))
-                        .foregroundStyle(Color.appTextSecondary)
+                        .foregroundStyle(Color.secondary)
                 }
             }
             .padding()
-            .background(Color.appDanger.opacity(0.15))
+            .background(Color.red.opacity(0.15))
             .clipShape(RoundedRectangle(cornerRadius: AppTheme.smallCornerRadius))
             .overlay(
                 RoundedRectangle(cornerRadius: AppTheme.smallCornerRadius)
-                    .stroke(Color.appDanger.opacity(0.3), lineWidth: 1)
+                    .stroke(Color.red.opacity(0.3), lineWidth: 1)
             )
             .padding(.horizontal)
             .transition(.move(edge: .top).combined(with: .opacity))

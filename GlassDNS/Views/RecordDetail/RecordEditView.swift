@@ -34,13 +34,12 @@ struct RecordEditView: View {
             .padding()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.appBackground.ignoresSafeArea())
         .navigationTitle(viewModel.isNewRecord ? "Add Record" : "Edit Record")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
                 Button("Cancel") { dismiss() }
-                    .foregroundStyle(Color.appTextSecondary)
+                    .foregroundStyle(Color.secondary)
             }
             ToolbarItem(placement: .confirmationAction) {
                 Button("Save") {
@@ -50,7 +49,7 @@ struct RecordEditView: View {
                         }
                     }
                 }
-                .foregroundStyle(Color.appAccent)
+                .foregroundStyle(Color.accentColor)
                 .disabled(!viewModel.canAttemptSave)
             }
         }
@@ -75,12 +74,12 @@ struct RecordEditView: View {
                             }
                             .padding(.horizontal, 12)
                             .padding(.vertical, 8)
-                            .background(viewModel.type == type ? Color.appAccent.opacity(0.2) : Color.white.opacity(0.05))
-                            .foregroundStyle(viewModel.type == type ? Color.appAccent : Color.appTextSecondary)
+                            .background(viewModel.type == type ? AnyShapeStyle(Color.accentColor.opacity(0.2)) : AnyShapeStyle(.fill.tertiary))
+                            .foregroundStyle(viewModel.type == type ? Color.accentColor : Color.secondary)
                             .clipShape(RoundedRectangle(cornerRadius: 10))
                             .overlay(
                                 RoundedRectangle(cornerRadius: 10)
-                                    .stroke(viewModel.type == type ? Color.appAccent.opacity(0.4) : Color.clear, lineWidth: 1)
+                                    .stroke(viewModel.type == type ? Color.accentColor.opacity(0.4) : Color.clear, lineWidth: 1)
                             )
                         }
                     }
@@ -96,16 +95,16 @@ struct RecordEditView: View {
 
             TextField("e.g. www", text: $viewModel.name)
                 .textFieldStyle(.plain)
-                .foregroundStyle(Color.appText)
+                .foregroundStyle(Color.primary)
                 .autocorrectionDisabled()
                 .textInputAutocapitalization(.never)
                 .padding(12)
-                .background(Color.white.opacity(0.05))
+                .background(.fill.tertiary)
                 .clipShape(RoundedRectangle(cornerRadius: 8))
 
             Text("Use @ for the root domain")
                 .font(.caption)
-                .foregroundStyle(Color.appTextSecondary)
+                .foregroundStyle(Color.secondary)
         }
         .glassCard()
     }
@@ -116,11 +115,11 @@ struct RecordEditView: View {
 
             TextField(contentPlaceholder, text: contentBinding)
                 .textFieldStyle(.plain)
-                .foregroundStyle(Color.appText)
+                .foregroundStyle(Color.primary)
                 .autocorrectionDisabled()
                 .textInputAutocapitalization(.never)
                 .padding(12)
-                .background(Color.white.opacity(0.05))
+                .background(.fill.tertiary)
                 .clipShape(RoundedRectangle(cornerRadius: 8))
         }
         .glassCard()
@@ -132,10 +131,10 @@ struct RecordEditView: View {
 
             TextField("10", value: $viewModel.priority, format: .number)
                 .textFieldStyle(.plain)
-                .foregroundStyle(Color.appText)
+                .foregroundStyle(Color.primary)
                 .keyboardType(.numberPad)
                 .padding(12)
-                .background(Color.white.opacity(0.05))
+                .background(.fill.tertiary)
                 .clipShape(RoundedRectangle(cornerRadius: 8))
         }
         .glassCard()
@@ -155,8 +154,8 @@ struct RecordEditView: View {
                                 .font(.caption.weight(.medium))
                                 .padding(.horizontal, 12)
                                 .padding(.vertical, 6)
-                                .background(viewModel.ttl == preset.value ? Color.appAccent.opacity(0.2) : Color.white.opacity(0.05))
-                                .foregroundStyle(viewModel.ttl == preset.value ? Color.appAccent : Color.appTextSecondary)
+                                .background(viewModel.ttl == preset.value ? AnyShapeStyle(Color.accentColor.opacity(0.2)) : AnyShapeStyle(.fill.tertiary))
+                                .foregroundStyle(viewModel.ttl == preset.value ? Color.accentColor : Color.secondary)
                                 .clipShape(Capsule())
                         }
                     }
@@ -171,17 +170,17 @@ struct RecordEditView: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text("Proxy")
                     .font(.subheadline.weight(.medium))
-                    .foregroundStyle(Color.appText)
+                    .foregroundStyle(Color.primary)
 
                 Text("Route traffic through Cloudflare network")
                     .font(.caption)
-                    .foregroundStyle(Color.appTextSecondary)
+                    .foregroundStyle(Color.secondary)
             }
 
             Spacer()
 
             Toggle("", isOn: $viewModel.proxied)
-                .tint(Color.appAccent)
+                .tint(Color.accentColor)
         }
         .glassCard()
     }
@@ -195,11 +194,11 @@ struct RecordEditView: View {
                     HStack(spacing: 6) {
                         Image(systemName: "exclamationmark.circle.fill")
                             .font(.caption)
-                            .foregroundStyle(Color.appDanger)
+                            .foregroundStyle(Color.red)
 
                         Text(error)
                             .font(.caption)
-                            .foregroundStyle(Color.appDanger.opacity(0.9))
+                            .foregroundStyle(Color.red.opacity(0.9))
                     }
                 }
             }
@@ -217,7 +216,7 @@ struct RecordEditView: View {
     private func fieldLabel(_ text: LocalizedStringResource) -> some View {
         Text(text)
             .font(.subheadline.weight(.medium))
-            .foregroundStyle(Color.appTextSecondary)
+            .foregroundStyle(Color.secondary)
     }
 
     private var contentPlaceholder: String {

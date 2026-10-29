@@ -31,14 +31,13 @@ struct RecordListView: View {
                 } header: {
                     RecordTypePicker(selectedType: $viewModel.filterType)
                         .padding(.vertical, AppTheme.smallSpacing)
-                        .background(Color.appBackground)
+                        .background(.background)
                 }
             }
             .padding(.horizontal)
             .padding(.bottom)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.appBackground.ignoresSafeArea())
         .navigationTitle(viewModel.zone.name)
         .searchable(text: $viewModel.searchText, prompt: "Search records")
         .refreshable {
@@ -50,7 +49,7 @@ struct RecordListView: View {
                     showingAddRecord = true
                 } label: {
                     Image(systemName: "plus")
-                        .foregroundStyle(Color.appAccent)
+                        .foregroundStyle(Color.accentColor)
                 }
             }
         }
@@ -99,11 +98,11 @@ struct RecordListView: View {
         VStack(spacing: 12) {
             Image(systemName: "doc.text")
                 .font(.system(size: 40))
-                .foregroundStyle(Color.appTextSecondary.opacity(0.5))
+                .foregroundStyle(Color.secondary.opacity(0.5))
 
             Text(viewModel.searchText.isEmpty && viewModel.filterType == nil ? "No DNS Records" : "No Matching Records")
                 .font(.headline)
-                .foregroundStyle(Color.appTextSecondary)
+                .foregroundStyle(Color.secondary)
         }
         .padding(.top, 60)
     }

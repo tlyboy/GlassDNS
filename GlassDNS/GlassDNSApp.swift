@@ -8,7 +8,6 @@ struct GlassDNSApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView(providerSetupViewModel: providerSetupViewModel)
-                .tint(Color.appAccent)
                 .environment(\.locale, appLanguage.isEmpty ? .current : Locale(identifier: appLanguage))
                 .id(appLanguage)
         }

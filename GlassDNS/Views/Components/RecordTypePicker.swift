@@ -34,13 +34,9 @@ private struct FilterChip: View {
                 .font(.subheadline.weight(.medium))
                 .padding(.horizontal, 14)
                 .padding(.vertical, 7)
-                .background(isSelected ? Color.appAccent : Color.white.opacity(0.08))
-                .foregroundStyle(isSelected ? .white : Color.appTextSecondary)
+                .background(isSelected ? AnyShapeStyle(Color.accentColor) : AnyShapeStyle(.fill.tertiary))
+                .foregroundStyle(isSelected ? .white : Color.secondary)
                 .clipShape(Capsule())
-                .overlay(
-                    Capsule()
-                        .stroke(Color.white.opacity(isSelected ? 0 : 0.06), lineWidth: 1)
-                )
         }
         .buttonStyle(.plain)
     }
