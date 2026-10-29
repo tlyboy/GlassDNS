@@ -24,10 +24,10 @@ struct RecordRowView: View {
             VStack(alignment: .trailing, spacing: 4) {
                 Text(record.type.rawValue)
                     .font(.caption2.weight(.semibold))
-                    .foregroundStyle(Color.accentColor)
+                    .foregroundStyle(Color("AccentColor"))
                     .padding(.horizontal, 8)
                     .padding(.vertical, 2)
-                    .background(Color.accentColor.opacity(0.12))
+                    .background(Color("AccentColor").opacity(0.12))
                     .clipShape(Capsule())
 
                 HStack(spacing: 4) {
