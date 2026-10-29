@@ -110,8 +110,7 @@ struct RecordListScreen: View {
             if let viewModel {
                 RecordListView(viewModel: viewModel, provider: provider)
             } else {
-                LoadingView()
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                ProgressView()
             }
         }
         .navigationDestination(for: DNSRecord.self) { record in
@@ -141,31 +140,25 @@ struct ProviderManagerSheet: View {
 
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(spacing: AppTheme.spacing) {
-                    ForEach(providerSetupViewModel.accounts) { account in
-                        Button {
-                            onSelectAccount(account)
-                        } label: {
-                            accountRow(account)
-                        }
-                    }
-
-                    if providerSetupViewModel.accounts.isEmpty {
-                        VStack(spacing: 12) {
-                            Image(systemName: "cloud.fill")
-                                .font(.system(size: 40))
-                                .foregroundStyle(Color.secondary.opacity(0.5))
-                            Text("No Providers")
-                                .font(.headline)
-                                .foregroundStyle(Color.secondary)
-                        }
-                        .padding(.top, 60)
+            List(providerSetupViewModel.accounts) { account in
+                Button {
+                    onSelectAccount(account)
+                } label: {
+                    accountRow(account)
+                }
+                .swipeActions(edge: .trailing) {
+                    Button(role: .destructive) {
+                        accountToDelete = account
+                    } label: {
+                        Label("Delete", systemImage: "trash")
                     }
                 }
-                .padding()
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .overlay {
+                if providerSetupViewModel.accounts.isEmpty {
+                    ContentUnavailableView("No Providers", systemImage: "cloud.fill")
+                }
+            }
             .navigationTitle("DNS Providers")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -221,18 +214,7 @@ struct ProviderManagerSheet: View {
                     .foregroundStyle(Color.secondary)
             }
 
-            Spacer()
-
-            Button {
-                accountToDelete = account
-            } label: {
-                Image(systemName: "trash")
-                    .font(.body)
-                    .foregroundStyle(Color.red)
-                    .frame(width: 36, height: 36)
-            }
         }
-        .glassCard()
     }
 }
 

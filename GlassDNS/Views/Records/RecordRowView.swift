@@ -43,6 +43,5 @@ struct RecordRowView: View {
                 }
             }
         }
-        .glassCard()
     }
 }

@@ -7,38 +7,41 @@ struct RecordListView: View {
     @State private var recordToDelete: DNSRecord?
 
     var body: some View {
-        ScrollView {
-            LazyVStack(spacing: AppTheme.spacing, pinnedViews: .sectionHeaders) {
-                Section {
-                    if viewModel.isLoading && viewModel.records.isEmpty {
-                        LoadingView()
-                    } else if viewModel.filteredRecords.isEmpty {
-                        emptyState
-                    } else {
-                        ForEach(viewModel.filteredRecords) { record in
-                            NavigationLink(value: record) {
-                                RecordRowView(record: record)
-                            }
-                            .contextMenu {
-                                Button(role: .destructive) {
-                                    recordToDelete = record
-                                } label: {
-                                    Label("Delete", systemImage: "trash")
-                                }
-                            }
-                        }
-                    }
-                } header: {
-                    RecordTypePicker(selectedType: $viewModel.filterType)
-                        .padding(.vertical, AppTheme.smallSpacing)
-                        .background(.background)
+        List(viewModel.filteredRecords) { record in
+            NavigationLink(value: record) {
+                RecordRowView(record: record)
+            }
+            .swipeActions(edge: .trailing) {
+                Button(role: .destructive) {
+                    recordToDelete = record
+                } label: {
+                    Label("Delete", systemImage: "trash")
                 }
             }
-            .padding(.horizontal)
-            .padding(.bottom)
+            .contextMenu {
+                Button(role: .destructive) {
+                    recordToDelete = record
+                } label: {
+                    Label("Delete", systemImage: "trash")
+                }
+            }
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .overlay {
+            if viewModel.isLoading && viewModel.records.isEmpty {
+                ProgressView()
+            } else if viewModel.filteredRecords.isEmpty {
+                ContentUnavailableView(
+                    viewModel.searchText.isEmpty && viewModel.filterType == nil ? "No DNS Records" : "No Matching Records",
+                    systemImage: "doc.text"
+                )
+            }
+        }
+        .safeAreaBar(edge: .top) {
+            RecordTypePicker(selectedType: $viewModel.filterType)
+                .padding(.vertical, AppTheme.smallSpacing)
+        }
         .navigationTitle(viewModel.zone.name)
+        .navigationBarTitleDisplayMode(.inline)
         .searchable(text: $viewModel.searchText, prompt: "Search records")
         .refreshable {
             await viewModel.loadRecords(force: true)
@@ -92,18 +95,5 @@ struct RecordListView: View {
         .onAppear {
             Task { await viewModel.loadRecords() }
         }
-    }
-
-    private var emptyState: some View {
-        VStack(spacing: 12) {
-            Image(systemName: "doc.text")
-                .font(.system(size: 40))
-                .foregroundStyle(Color.secondary.opacity(0.5))
-
-            Text(viewModel.searchText.isEmpty && viewModel.filterType == nil ? "No DNS Records" : "No Matching Records")
-                .font(.headline)
-                .foregroundStyle(Color.secondary)
-        }
-        .padding(.top, 60)
     }
 }

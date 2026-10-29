@@ -4,24 +4,21 @@ struct ZoneListView: View {
     @Bindable var viewModel: ZoneListViewModel
 
     var body: some View {
-        ScrollView {
-            LazyVStack(spacing: AppTheme.spacing) {
-                if viewModel.isLoading && viewModel.zones.isEmpty {
-                    LoadingView()
-                } else if viewModel.filteredZones.isEmpty {
-                    emptyState
-                } else {
-                    ForEach(viewModel.filteredZones) { zone in
-                        NavigationLink(value: zone) {
-                            zoneRow(zone)
-                        }
-                    }
-                }
+        List(viewModel.filteredZones) { zone in
+            NavigationLink(value: zone) {
+                zoneRow(zone)
             }
-            .padding(.horizontal)
-            .padding(.top, AppTheme.spacing)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .overlay {
+            if viewModel.isLoading && viewModel.zones.isEmpty {
+                ProgressView()
+            } else if viewModel.filteredZones.isEmpty {
+                ContentUnavailableView(
+                    viewModel.searchText.isEmpty ? "No Domains" : "No Matching Domains",
+                    systemImage: "globe"
+                )
+            }
+        }
         .navigationTitle("Domains")
         .searchable(text: $viewModel.searchText, prompt: "Search domains")
         .refreshable {
@@ -38,19 +35,6 @@ struct ZoneListView: View {
         .onAppear {
             Task { await viewModel.loadZones() }
         }
-    }
-
-    private var emptyState: some View {
-        VStack(spacing: 12) {
-            Image(systemName: "globe")
-                .font(.system(size: 40))
-                .foregroundStyle(Color.secondary.opacity(0.5))
-
-            Text(viewModel.searchText.isEmpty ? "No Domains" : "No Matching Domains")
-                .font(.headline)
-                .foregroundStyle(Color.secondary)
-        }
-        .padding(.top, 60)
     }
 
     private func zoneRow(_ zone: Zone) -> some View {
@@ -78,12 +62,6 @@ struct ZoneListView: View {
                 }
             }
 
-            Spacer()
-
-            Image(systemName: "chevron.right")
-                .font(.caption.weight(.semibold))
-                .foregroundStyle(Color.secondary)
         }
-        .glassCard()
     }
 }
