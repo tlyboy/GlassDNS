@@ -13,5 +13,8 @@ struct GlassDNSApp: App {
                 .environment(\.locale, appLanguage.isEmpty ? .current : Locale(identifier: appLanguage))
                 .id(appLanguage)
         }
+        .commands {
+            RecordCommands()
+        }
     }
 }

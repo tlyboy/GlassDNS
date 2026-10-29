@@ -4,7 +4,6 @@ import Observation
 @Observable
 final class ZoneListViewModel {
     var zones: [Zone] = []
-    var searchText = ""
     var isLoading = false
     var errorMessage: String?
 
@@ -14,11 +13,6 @@ final class ZoneListViewModel {
 
     init(provider: any DNSProvider) {
         self.provider = provider
-    }
-
-    var filteredZones: [Zone] {
-        if searchText.isEmpty { return zones }
-        return zones.filter { $0.name.localizedCaseInsensitiveContains(searchText) }
     }
 
     func loadZones(force: Bool = false) async {

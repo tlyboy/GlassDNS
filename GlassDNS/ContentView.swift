@@ -1,220 +1,80 @@
 import SwiftUI
 
+struct ZoneSelection: Hashable {
+    let accountID: String
+    let zone: Zone
+}
+
 struct ContentView: View {
     @Bindable var providerSetupViewModel: ProviderSetupViewModel
 
-    @State private var activeAccountID: String?
-    @State private var activeProvider: (any DNSProvider)?
-    @State private var zoneListViewModel: ZoneListViewModel?
-    @State private var loadTask: Task<Void, Never>?
-    @State private var showingProviderManager = false
-    @State private var showingSettings = false
-
-    var body: some View {
-        NavigationStack {
-            Group {
-                if let zoneListViewModel {
-                    ZoneListView(viewModel: zoneListViewModel)
-                        .toolbar {
-                            ToolbarItem(placement: .topBarLeading) {
-                                Button {
-                                    showingProviderManager = true
-                                } label: {
-                                    Label("DNS Providers", systemImage: "server.rack")
-                                        .foregroundStyle(Color.accentColor)
-                                }
-                            }
-                            ToolbarItem(placement: .topBarTrailing) {
-                                Button {
-                                    showingSettings = true
-                                } label: {
-                                    Label("Settings", systemImage: "gearshape")
-                                        .foregroundStyle(Color.accentColor)
-                                }
-                            }
-                        }
-                } else {
-                    ProviderSetupView(viewModel: providerSetupViewModel)
-                }
-            }
-            .navigationDestination(for: Zone.self) { zone in
-                if let provider = activeProvider {
-                    RecordListScreen(zone: zone, provider: provider)
-                }
-            }
-        }
-        .sheet(isPresented: $showingProviderManager) {
-            ProviderManagerSheet(
-                providerSetupViewModel: providerSetupViewModel,
-                onSelectAccount: { account in
-                    activateAccount(account)
-                    showingProviderManager = false
-                }
-            )
-        }
-        .sheet(isPresented: $showingSettings) {
-            SettingsSheet()
-        }
-        .onChange(of: providerSetupViewModel.accounts) {
-            if providerSetupViewModel.accounts.isEmpty {
-                deactivate()
-            } else if let id = activeAccountID,
-                      !providerSetupViewModel.accounts.contains(where: { $0.id == id }) {
-                // Active provider was deleted, switch to first available
-                if let first = providerSetupViewModel.accounts.first {
-                    activateAccount(first)
-                } else {
-                    deactivate()
-                }
-            } else if zoneListViewModel == nil {
-                if let first = providerSetupViewModel.accounts.first {
-                    activateAccount(first)
-                }
-            }
-        }
-        .onAppear {
-            if let first = providerSetupViewModel.accounts.first, zoneListViewModel == nil {
-                activateAccount(first)
-            }
-        }
-    }
-
-    private func activateAccount(_ account: ProviderAccount) {
-        guard let provider = providerSetupViewModel.providerFor(account: account) else { return }
-        loadTask?.cancel()
-        activeAccountID = account.id
-        activeProvider = provider
-        let vm = ZoneListViewModel(provider: provider)
-        zoneListViewModel = vm
-        loadTask = Task { await vm.loadZones() }
-    }
-
-    private func deactivate() {
-        loadTask?.cancel()
-        activeAccountID = nil
-        activeProvider = nil
-        zoneListViewModel = nil
-    }
-}
-
-// MARK: - Record List Screen (owns its own ViewModel)
-
-struct RecordListScreen: View {
-    let zone: Zone
-    let provider: any DNSProvider
-
-    @State private var viewModel: RecordListViewModel?
+    @State private var selectedZone: ZoneSelection?
+    @State private var selectedRecordID: DNSRecord.ID?
+    @State private var zoneLists: [String: ZoneListViewModel] = [:]
+    @State private var recordList: RecordListViewModel?
 
     var body: some View {
         Group {
-            if let viewModel {
-                RecordListView(viewModel: viewModel, provider: provider)
+            if providerSetupViewModel.accounts.isEmpty {
+                NavigationStack {
+                    ProviderSetupView(viewModel: providerSetupViewModel)
+                }
             } else {
-                ProgressView()
-            }
-        }
-        .navigationDestination(for: DNSRecord.self) { record in
-            if let viewModel {
-                RecordDetailView(record: record, zoneID: zone.id, provider: provider) {
-                    Task { await viewModel.loadRecords(force: true) }
-                }
-            }
-        }
-        .onAppear {
-            if viewModel == nil {
-                viewModel = RecordListViewModel(zone: zone, provider: provider)
-            }
-        }
-    }
-}
-
-// MARK: - Provider Manager Sheet
-
-struct ProviderManagerSheet: View {
-    @Bindable var providerSetupViewModel: ProviderSetupViewModel
-    var onSelectAccount: (ProviderAccount) -> Void
-
-    @State private var showingAddSheet = false
-    @State private var accountToDelete: ProviderAccount?
-    @Environment(\.dismiss) private var dismiss
-
-    var body: some View {
-        NavigationStack {
-            List(providerSetupViewModel.accounts) { account in
-                Button {
-                    onSelectAccount(account)
-                } label: {
-                    accountRow(account)
-                }
-                .swipeActions(edge: .trailing) {
-                    Button(role: .destructive) {
-                        accountToDelete = account
-                    } label: {
-                        Label("Delete", systemImage: "trash")
+                NavigationSplitView {
+                    SidebarView(
+                        providerSetupViewModel: providerSetupViewModel,
+                        zoneLists: zoneLists,
+                        selection: $selectedZone
+                    )
+                } content: {
+                    if let recordList {
+                        RecordListView(viewModel: recordList, selection: $selectedRecordID)
+                            .id(ObjectIdentifier(recordList))
+                    } else {
+                        ContentUnavailableView("Select a domain", systemImage: "globe")
+                    }
+                } detail: {
+                    if let recordList, let record = recordList.records.first(where: { $0.id == selectedRecordID }) {
+                        RecordDetailView(record: record, zoneID: recordList.zone.id, provider: recordList.provider) {
+                            Task { await recordList.loadRecords(force: true) }
+                        }
+                        .id(record.id)
+                    } else {
+                        ContentUnavailableView("Select a record", systemImage: "doc.text")
                     }
                 }
             }
-            .overlay {
-                if providerSetupViewModel.accounts.isEmpty {
-                    ContentUnavailableView("No Providers", systemImage: "cloud.fill")
-                }
-            }
-            .navigationTitle("DNS Providers")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Close") { dismiss() }
-                        .foregroundStyle(Color.secondary)
-                }
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        showingAddSheet = true
-                    } label: {
-                        Label("Add Provider", systemImage: "plus")
-                            .foregroundStyle(Color.accentColor)
-                    }
-                }
-            }
-            .sheet(isPresented: $showingAddSheet) {
-                AddProviderView(viewModel: providerSetupViewModel, isPresented: $showingAddSheet)
-            }
-            .confirmationDialog(
-                "Are you sure you want to delete this provider?",
-                isPresented: .init(
-                    get: { accountToDelete != nil },
-                    set: { if !$0 { accountToDelete = nil } }
-                ),
-                titleVisibility: .visible
-            ) {
-                Button("Delete", role: .destructive) {
-                    if let account = accountToDelete {
-                        providerSetupViewModel.deleteAccount(account)
-                    }
-                }
-            }
+        }
+        .onChange(of: providerSetupViewModel.accounts, initial: true) {
+            syncZoneLists()
+        }
+        .onChange(of: selectedZone) {
+            selectedRecordID = nil
+            recordList = makeRecordList()
         }
     }
 
-    private func accountRow(_ account: ProviderAccount) -> some View {
-        HStack(spacing: 14) {
-            Image(systemName: account.providerType.icon)
-                .font(.title2)
-                .foregroundStyle(Color.accentColor)
-                .frame(width: 44, height: 44)
-                .background(Color.accentColor.opacity(0.12))
-                .clipShape(RoundedRectangle(cornerRadius: 10))
-
-            VStack(alignment: .leading, spacing: 4) {
-                Text(account.displayName)
-                    .font(.headline)
-                    .foregroundStyle(Color.primary)
-
-                Text(account.providerType.displayName)
-                    .font(.caption)
-                    .foregroundStyle(Color.secondary)
-            }
-
+    private func syncZoneLists() {
+        let accounts = providerSetupViewModel.accounts
+        let accountIDs = Set(accounts.map(\.id))
+        zoneLists = zoneLists.filter { accountIDs.contains($0.key) }
+        for account in accounts where zoneLists[account.id] == nil {
+            guard let provider = providerSetupViewModel.providerFor(account: account) else { continue }
+            let zoneList = ZoneListViewModel(provider: provider)
+            zoneLists[account.id] = zoneList
+            Task { await zoneList.loadZones() }
         }
+        if let selectedZone, !accountIDs.contains(selectedZone.accountID) {
+            self.selectedZone = nil
+        }
+    }
+
+    private func makeRecordList() -> RecordListViewModel? {
+        guard let selectedZone,
+              let account = providerSetupViewModel.accounts.first(where: { $0.id == selectedZone.accountID }),
+              let provider = providerSetupViewModel.providerFor(account: account)
+        else { return nil }
+        return RecordListViewModel(zone: selectedZone.zone, provider: provider)
     }
 }
 

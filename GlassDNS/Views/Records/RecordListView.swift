@@ -2,15 +2,13 @@ import SwiftUI
 
 struct RecordListView: View {
     @Bindable var viewModel: RecordListViewModel
-    let provider: any DNSProvider
+    @Binding var selection: DNSRecord.ID?
     @State private var showingAddRecord = false
     @State private var recordToDelete: DNSRecord?
 
     var body: some View {
-        List(viewModel.filteredRecords) { record in
-            NavigationLink(value: record) {
-                RecordRowView(record: record)
-            }
+        List(viewModel.filteredRecords, selection: $selection) { record in
+            RecordRowView(record: record)
             .swipeActions(edge: .trailing) {
                 Button(role: .destructive) {
                     recordToDelete = record
@@ -62,7 +60,7 @@ struct RecordListView: View {
                     viewModel: RecordEditViewModel(
                         record: .new(zoneID: viewModel.zone.id, zoneName: viewModel.zone.name),
                         zoneID: viewModel.zone.id,
-                        provider: provider
+                        provider: viewModel.provider
                     )
                 ) { _ in
                     showingAddRecord = false
@@ -80,7 +78,7 @@ struct RecordListView: View {
         ) {
             Button("Delete", role: .destructive) {
                 if let record = recordToDelete {
-                    Task { await viewModel.deleteRecord(record) }
+                    delete(record)
                 }
             }
         }
@@ -92,8 +90,24 @@ struct RecordListView: View {
         } message: {
             Text(viewModel.errorMessage ?? "")
         }
+        .focusedSceneValue(\.recordListActions, RecordListActions(
+            addRecord: { showingAddRecord = true },
+            refresh: { Task { await viewModel.loadRecords(force: true) } },
+            deleteSelected: selectedRecord.map { record in { recordToDelete = record } }
+        ))
         .onAppear {
             Task { await viewModel.loadRecords() }
         }
+    }
+
+    private var selectedRecord: DNSRecord? {
+        viewModel.filteredRecords.first { $0.id == selection }
+    }
+
+    private func delete(_ record: DNSRecord) {
+        if selection == record.id {
+            selection = nil
+        }
+        Task { await viewModel.deleteRecord(record) }
     }
 }

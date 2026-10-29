@@ -10,7 +10,7 @@ final class RecordListViewModel {
     var errorMessage: String?
 
     let zone: Zone
-    private let provider: any DNSProvider
+    let provider: any DNSProvider
     @ObservationIgnored
     private var loadTask: Task<[DNSRecord], Error>?
 
