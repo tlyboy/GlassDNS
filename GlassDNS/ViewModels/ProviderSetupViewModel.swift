@@ -1,4 +1,4 @@
-import Foundation
+import SwiftUI
 import Observation
 
 @Observable
@@ -58,6 +58,11 @@ final class ProviderSetupViewModel {
             KeychainService.delete(forAccountID: account.id)
         }
         accounts.removeAll { $0.id == account.id }
+        ProviderAccountStore.save(accounts)
+    }
+
+    func moveAccounts(fromOffsets source: IndexSet, toOffset destination: Int) {
+        accounts.move(fromOffsets: source, toOffset: destination)
         ProviderAccountStore.save(accounts)
     }
 

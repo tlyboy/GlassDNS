@@ -67,7 +67,7 @@ struct SidebarView: View {
             AddProviderView(viewModel: providerSetupViewModel, isPresented: $showingAddProvider)
         }
         .sheet(isPresented: $showingSettings) {
-            SettingsSheet()
+            SettingsSheet(providerSetupViewModel: providerSetupViewModel)
         }
     }
 

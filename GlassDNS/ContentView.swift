@@ -78,6 +78,7 @@ struct ContentView: View {
 // MARK: - Settings Sheet
 
 struct SettingsSheet: View {
+    @Bindable var providerSetupViewModel: ProviderSetupViewModel
     @AppStorage("appLanguage") private var appLanguage: String = ""
     @AppStorage("appAppearance") private var appearance: AppAppearance = .system
     @Environment(\.dismiss) private var dismiss
@@ -102,6 +103,12 @@ struct SettingsSheet: View {
                         ForEach(AppAppearance.allCases) { option in
                             Text(option.label).tag(option)
                         }
+                    }
+                }
+
+                Section("Providers") {
+                    NavigationLink("Manage Providers") {
+                        ProviderManagementView(viewModel: providerSetupViewModel)
                     }
                 }
             }
