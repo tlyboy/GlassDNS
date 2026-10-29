@@ -44,6 +44,15 @@ final class RecordEditViewModel {
         !name.isEmpty && !content.isEmpty && validationErrors.isEmpty
     }
 
+    var hasChanges: Bool {
+        name != (isNewRecord ? "" : record.name)
+            || type != record.type
+            || content != record.content
+            || ttl != record.ttl
+            || proxied != (record.proxied ?? false)
+            || priority != (record.priority ?? 10)
+    }
+
     var canAttemptSave: Bool {
         !name.isEmpty && !content.isEmpty && !isSaving
     }
