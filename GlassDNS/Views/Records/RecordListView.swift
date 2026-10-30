@@ -8,45 +8,57 @@ struct RecordListView: View {
     @Environment(\.isEnabled) private var isEnabled
 
     var body: some View {
-        List(viewModel.filteredRecords, selection: $selection) { record in
-            NavigationLink(value: record.id) {
-                RecordRowView(record: record)
-            }
-            .swipeActions(edge: .trailing) {
-                Button(role: .destructive) {
-                    recordToDelete = record
-                } label: {
-                    Label("Delete", systemImage: "trash")
+        List(selection: $selection) {
+            Section {
+                ForEach(viewModel.filteredRecords) { record in
+                    NavigationLink(value: record.id) {
+                        RecordRowView(record: record, isSelected: selection == record.id)
+                    }
+                    .selectionBackground(selection == record.id, horizontalInset: 10)
+                    .swipeActions(edge: .trailing) {
+                        Button(role: .destructive) {
+                            recordToDelete = record
+                        } label: {
+                            Label("Delete", systemImage: "trash")
+                        }
+                    }
+                    .contextMenu {
+                        Button(role: .destructive) {
+                            recordToDelete = record
+                        } label: {
+                            Label("Delete", systemImage: "trash")
+                        }
+                    }
                 }
-            }
-            .contextMenu {
-                Button(role: .destructive) {
-                    recordToDelete = record
-                } label: {
-                    Label("Delete", systemImage: "trash")
+
+                if viewModel.filteredRecords.isEmpty && !(viewModel.isLoading && viewModel.records.isEmpty) {
+                    ContentUnavailableView(
+                        viewModel.searchText.isEmpty && viewModel.filterType == nil ? "No DNS Records" : "No Matching Records",
+                        systemImage: "doc.text"
+                    )
+                    .listRowSeparator(.hidden)
+                    .listRowBackground(Color.clear)
                 }
+            } header: {
+                RecordTypePicker(selectedType: $viewModel.filterType)
+                    .padding(.vertical, AppTheme.smallSpacing)
+                    .textCase(nil)
+                    .listRowInsets(EdgeInsets())
             }
         }
-        #if os(iOS)
-        .tint(Color(.systemGray4))
+        #if os(macOS)
+        .listStyle(.inset)
+        #else
+        .listStyle(.plain)
         #endif
         .overlay {
             if viewModel.isLoading && viewModel.records.isEmpty {
                 ProgressView()
-            } else if viewModel.filteredRecords.isEmpty {
-                ContentUnavailableView(
-                    viewModel.searchText.isEmpty && viewModel.filterType == nil ? "No DNS Records" : "No Matching Records",
-                    systemImage: "doc.text"
-                )
             }
-        }
-        .safeAreaBar(edge: .top) {
-            RecordTypePicker(selectedType: $viewModel.filterType)
-                .padding(.vertical, AppTheme.smallSpacing)
         }
         .navigationTitle(viewModel.zone.name)
         .inlineNavigationTitle()
-        .searchable(text: $viewModel.searchText, prompt: "Search records")
+        .searchable(text: $viewModel.searchText, placement: .toolbar, prompt: "Search records")
         .refreshable {
             await viewModel.loadRecords(force: true)
         }
@@ -59,6 +71,9 @@ struct RecordListView: View {
                         .foregroundStyle(Color.accentColor)
                 }
             }
+            #if os(iOS)
+            DefaultToolbarItem(kind: .search, placement: .bottomBar)
+            #endif
         }
         .sheet(isPresented: $showingAddRecord) {
             NavigationStack {

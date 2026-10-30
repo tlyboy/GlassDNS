@@ -2,12 +2,14 @@ import SwiftUI
 
 struct RecordRowView: View {
     let record: DNSRecord
+    var isSelected = false
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-    @Environment(\.backgroundProminence) private var backgroundProminence
 
     var body: some View {
         let isAccessibilitySize = dynamicTypeSize.isAccessibilitySize
-        let badgeColor = backgroundProminence == .increased ? Color.white : Color("AccentColor")
+        let badgeColor = isSelected ? Color.white : Color("AccentColor")
+        let primaryText = isSelected ? Color.white : Color.primary
+        let secondaryText = isSelected ? Color.white.opacity(0.8) : Color.secondary
         let rowLayout = isAccessibilitySize
             ? AnyLayout(VStackLayout(alignment: .leading, spacing: 8))
             : AnyLayout(HStackLayout(spacing: 12))
@@ -24,12 +26,12 @@ struct RecordRowView: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text(record.name)
                     .font(.subheadline.weight(.medium))
-                    .foregroundStyle(Color.primary)
+                    .foregroundStyle(primaryText)
                     .lineLimit(isAccessibilitySize ? nil : 1)
 
                 Text(record.content)
                     .font(.caption)
-                    .foregroundStyle(Color.secondary)
+                    .foregroundStyle(secondaryText)
                     .lineLimit(isAccessibilitySize ? nil : 1)
             }
 
@@ -58,7 +60,7 @@ struct RecordRowView: View {
 
                     Text(record.displayTTL)
                         .font(.caption2)
-                        .foregroundStyle(Color.secondary)
+                        .foregroundStyle(secondaryText)
                 }
             }
         }

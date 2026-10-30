@@ -26,9 +26,11 @@ struct SidebarView: View {
                             statusRow(zoneList)
                         }
                         ForEach(zones) { zone in
-                            NavigationLink(value: ZoneSelection(accountID: account.id, zone: zone)) {
-                                zoneRow(zone)
+                            let value = ZoneSelection(accountID: account.id, zone: zone)
+                            NavigationLink(value: value) {
+                                zoneRow(zone, isSelected: selection == value)
                             }
+                            .selectionBackground(selection == value, horizontalInset: sidebarSelectionInset)
                         }
                     } header: {
                         sectionHeader(account)
@@ -73,6 +75,14 @@ struct SidebarView: View {
         .sheet(isPresented: $showingAddProvider) {
             AddProviderView(viewModel: providerSetupViewModel, isPresented: $showingAddProvider)
         }
+    }
+
+    private var sidebarSelectionInset: CGFloat {
+        #if os(macOS)
+        10
+        #else
+        0
+        #endif
     }
 
     private var searchPlacement: SearchFieldPlacement {
@@ -121,29 +131,31 @@ struct SidebarView: View {
         Label(account.displayName, systemImage: account.providerType.icon)
     }
 
-    private func zoneRow(_ zone: Zone) -> some View {
-        HStack(spacing: 14) {
+    private func zoneRow(_ zone: Zone, isSelected: Bool) -> some View {
+        let tileColor = isSelected ? Color.white : Color.accentColor
+        let secondaryText = isSelected ? Color.white.opacity(0.8) : Color.secondary
+        return HStack(spacing: 14) {
             Image(systemName: "globe")
                 .font(.title3)
-                .foregroundStyle(Color.accentColor)
+                .foregroundStyle(tileColor)
                 .frame(width: zoneIconSize, height: zoneIconSize)
-                .background(Color.accentColor.opacity(0.12))
+                .background(tileColor.opacity(isSelected ? 0.2 : 0.12))
                 .clipShape(RoundedRectangle(cornerRadius: 10))
                 .accessibilityHidden(true)
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(zone.name)
                     .font(.headline)
-                    .foregroundStyle(Color.primary)
+                    .foregroundStyle(isSelected ? Color.white : Color.primary)
 
                 HStack(spacing: 6) {
                     Circle()
-                        .fill(zone.isActive ? Color.accentColor : Color.secondary)
+                        .fill(zone.isActive ? tileColor : secondaryText)
                         .frame(width: 6, height: 6)
 
                     statusText(zone)
                         .font(.caption)
-                        .foregroundStyle(Color.secondary)
+                        .foregroundStyle(secondaryText)
                 }
             }
         }
