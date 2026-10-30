@@ -34,7 +34,7 @@ private struct FilterChip: View {
                 .font(.subheadline.weight(.medium))
                 .padding(.horizontal, 14)
                 .padding(.vertical, 7)
-                .background(isSelected ? AnyShapeStyle(Color.accentColor) : AnyShapeStyle(.fill.tertiary))
+                .background(isSelected ? AnyShapeStyle(Color("AccentColor")) : AnyShapeStyle(.fill.tertiary))
                 .foregroundStyle(isSelected ? .white : Color.secondary)
                 .clipShape(Capsule())
                 .frame(minHeight: 44)

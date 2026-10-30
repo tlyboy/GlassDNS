@@ -12,9 +12,8 @@ struct RecordListView: View {
             Section {
                 ForEach(viewModel.filteredRecords) { record in
                     NavigationLink(value: record.id) {
-                        RecordRowView(record: record, isSelected: selection == record.id)
+                        RecordRowView(record: record)
                     }
-                    .selectionBackground(selection == record.id, horizontalInset: 10)
                     .swipeActions(edge: .trailing) {
                         Button(role: .destructive) {
                             recordToDelete = record
@@ -50,6 +49,7 @@ struct RecordListView: View {
         .listStyle(.inset)
         #else
         .listStyle(.plain)
+        .tint(Color(.systemGray4))
         #endif
         .overlay {
             if viewModel.isLoading && viewModel.records.isEmpty {

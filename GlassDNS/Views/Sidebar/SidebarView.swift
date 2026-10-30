@@ -26,11 +26,9 @@ struct SidebarView: View {
                             statusRow(zoneList)
                         }
                         ForEach(zones) { zone in
-                            let value = ZoneSelection(accountID: account.id, zone: zone)
-                            NavigationLink(value: value) {
-                                zoneRow(zone, isSelected: selection == value)
+                            NavigationLink(value: ZoneSelection(accountID: account.id, zone: zone)) {
+                                zoneRow(zone)
                             }
-                            .selectionBackground(selection == value, horizontalInset: sidebarSelectionInset)
                         }
                     } header: {
                         sectionHeader(account)
@@ -50,6 +48,9 @@ struct SidebarView: View {
             }
         }
         .listStyle(.sidebar)
+        #if os(iOS)
+        .tint(Color(.systemGray4))
+        #endif
         .overlay {
             if !searchText.isEmpty && zoneLists.values.allSatisfy({ matchingZones($0.zones).isEmpty }) {
                 ContentUnavailableView("No Matching Domains", systemImage: "globe")
@@ -75,14 +76,6 @@ struct SidebarView: View {
         .sheet(isPresented: $showingAddProvider) {
             AddProviderView(viewModel: providerSetupViewModel, isPresented: $showingAddProvider)
         }
-    }
-
-    private var sidebarSelectionInset: CGFloat {
-        #if os(macOS)
-        10
-        #else
-        0
-        #endif
     }
 
     private var searchPlacement: SearchFieldPlacement {
@@ -131,31 +124,29 @@ struct SidebarView: View {
         Label(account.displayName, systemImage: account.providerType.icon)
     }
 
-    private func zoneRow(_ zone: Zone, isSelected: Bool) -> some View {
-        let tileColor = isSelected ? Color.white : Color.accentColor
-        let secondaryText = isSelected ? Color.white.opacity(0.8) : Color.secondary
-        return HStack(spacing: 14) {
+    private func zoneRow(_ zone: Zone) -> some View {
+        HStack(spacing: 14) {
             Image(systemName: "globe")
                 .font(.title3)
-                .foregroundStyle(tileColor)
+                .foregroundStyle(Color("AccentColor"))
                 .frame(width: zoneIconSize, height: zoneIconSize)
-                .background(tileColor.opacity(isSelected ? 0.2 : 0.12))
+                .background(Color("AccentColor").opacity(0.12))
                 .clipShape(RoundedRectangle(cornerRadius: 10))
                 .accessibilityHidden(true)
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(zone.name)
                     .font(.headline)
-                    .foregroundStyle(isSelected ? Color.white : Color.primary)
+                    .foregroundStyle(Color.primary)
 
                 HStack(spacing: 6) {
                     Circle()
-                        .fill(zone.isActive ? tileColor : secondaryText)
+                        .fill(zone.isActive ? Color("AccentColor") : Color.secondary)
                         .frame(width: 6, height: 6)
 
                     statusText(zone)
                         .font(.caption)
-                        .foregroundStyle(secondaryText)
+                        .foregroundStyle(Color.secondary)
                 }
             }
         }
