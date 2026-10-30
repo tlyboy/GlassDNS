@@ -20,19 +20,30 @@ struct RecordFormSections: View {
         } header: {
             Text("Name")
         } footer: {
-            Text("Use @ for the root domain")
+            VStack(alignment: .leading, spacing: 4) {
+                Text("Use @ for the root domain")
+                fieldErrors(.name)
+            }
         }
 
-        Section("Content") {
+        Section {
             TextField(contentPlaceholder, text: contentBinding)
                 .autocorrectionDisabled()
                 .textInputAutocapitalization(.never)
+        } header: {
+            Text("Content")
+        } footer: {
+            fieldErrors(.content)
         }
 
         if viewModel.type.requiresPriority {
-            Section("Priority") {
+            Section {
                 TextField("10", value: $viewModel.priority, format: .number)
                     .keyboardType(.numberPad)
+            } header: {
+                Text("Priority")
+            } footer: {
+                fieldErrors(.priority)
             }
         }
 
@@ -54,29 +65,27 @@ struct RecordFormSections: View {
                 }
                 .tint(Color.accentColor)
             }
+        } footer: {
+            fieldErrors(.ttl)
         }
 
-        errorSection
+        if let error = viewModel.errorMessage {
+            Section {
+                Label(error, systemImage: "exclamationmark.triangle.fill")
+                    .font(.subheadline)
+                    .foregroundStyle(Color.red)
+            }
+        }
     }
 
     @ViewBuilder
-    private var errorSection: some View {
-        let errors = viewModel.visibleValidationErrors
-        if !errors.isEmpty || viewModel.errorMessage != nil {
-            Section {
-                ForEach(Array(errors.enumerated()), id: \.offset) { _, error in
-                    Label {
-                        Text(error)
-                    } icon: {
-                        Image(systemName: "exclamationmark.circle.fill")
-                    }
-                }
-
-                if let error = viewModel.errorMessage {
-                    Label(error, systemImage: "exclamationmark.triangle.fill")
-                }
+    private func fieldErrors(_ field: RecordValidationError.Field) -> some View {
+        ForEach(Array(viewModel.visibleErrors(for: field).enumerated()), id: \.offset) { _, error in
+            Label {
+                Text(error)
+            } icon: {
+                Image(systemName: "exclamationmark.circle.fill")
             }
-            .font(.subheadline)
             .foregroundStyle(Color.red)
         }
     }

@@ -57,7 +57,7 @@ final class RecordEditViewModel {
         !name.isEmpty && !content.isEmpty && !isSaving
     }
 
-    var validationErrors: [LocalizedStringResource] {
+    var validationErrors: [RecordValidationError] {
         DNSRecordValidator.validate(
             name: name,
             type: type,
@@ -67,12 +67,12 @@ final class RecordEditViewModel {
         )
     }
 
-    var visibleValidationErrors: [LocalizedStringResource] {
+    func visibleErrors(for field: RecordValidationError.Field) -> [LocalizedStringResource] {
         guard hasAttemptedSave || hasEditedContentSinceTypeChange else {
             return []
         }
 
-        return validationErrors
+        return validationErrors.filter { $0.field == field }.map(\.message)
     }
 
     func updateContent(_ newValue: String) {

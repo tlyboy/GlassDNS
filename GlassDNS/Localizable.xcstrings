@@ -691,6 +691,16 @@
         }
       }
     },
+    "Proxied" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已代理"
+          }
+        }
+      }
+    },
     "Proxy" : {
       "localizations" : {
         "zh-Hans" : {

@@ -1,5 +1,14 @@
 import SwiftUI
 
+nonisolated struct RecordValidationError {
+    enum Field {
+        case name, content, ttl, priority
+    }
+
+    let field: Field
+    let message: LocalizedStringResource
+}
+
 nonisolated enum DNSRecordValidator {
     static func validate(
         name: String,
@@ -7,48 +16,51 @@ nonisolated enum DNSRecordValidator {
         content: String,
         ttl: Int,
         priority: Int
-    ) -> [LocalizedStringResource] {
-        var errors: [LocalizedStringResource] = []
+    ) -> [RecordValidationError] {
+        var errors: [RecordValidationError] = []
+        func add(_ field: RecordValidationError.Field, _ message: LocalizedStringResource) {
+            errors.append(RecordValidationError(field: field, message: message))
+        }
 
         if name.isEmpty {
-            errors.append("Name is required.")
+            add(.name, "Name is required.")
         }
 
         if content.isEmpty {
-            errors.append("Content is required.")
+            add(.content, "Content is required.")
         }
 
         if ttl != 1 && (ttl < 60 || ttl > 86400) {
-            errors.append("TTL must be 1 (Auto) or between 60-86400.")
+            add(.ttl, "TTL must be 1 (Auto) or between 60-86400.")
         }
 
         switch type {
         case .a:
             if !isValidIPv4(content) {
-                errors.append("Please enter a valid IPv4 address.")
+                add(.content, "Please enter a valid IPv4 address.")
             }
         case .aaaa:
             if !isValidIPv6(content) {
-                errors.append("Please enter a valid IPv6 address.")
+                add(.content, "Please enter a valid IPv6 address.")
             }
         case .cname, .ns:
             if !isValidHostname(content) {
-                errors.append("Please enter a valid hostname.")
+                add(.content, "Please enter a valid hostname.")
             }
         case .mx:
             if !isValidHostname(content) {
-                errors.append("Please enter a valid mail server hostname.")
+                add(.content, "Please enter a valid mail server hostname.")
             }
             if priority < 0 || priority > 65535 {
-                errors.append("Priority must be between 0-65535.")
+                add(.priority, "Priority must be between 0-65535.")
             }
         case .txt:
             if content.count > 2048 {
-                errors.append("TXT record content cannot exceed 2048 characters.")
+                add(.content, "TXT record content cannot exceed 2048 characters.")
             }
         case .srv:
             if priority < 0 || priority > 65535 {
-                errors.append("Priority must be between 0-65535.")
+                add(.priority, "Priority must be between 0-65535.")
             }
         }
 

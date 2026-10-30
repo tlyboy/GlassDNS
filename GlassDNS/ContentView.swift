@@ -129,6 +129,13 @@ struct SettingsSheet: View {
                                 Image(systemName: account.providerType.icon)
                                     .foregroundStyle(Color.accentColor)
                             }
+                            .contextMenu {
+                                Button(role: .destructive) {
+                                    accountToDelete = account
+                                } label: {
+                                    Label("Delete", systemImage: "trash")
+                                }
+                            }
                         }
                         .onDelete { offsets in
                             accountToDelete = offsets.first.map { providerSetupViewModel.accounts[$0] }

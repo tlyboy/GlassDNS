@@ -8,6 +8,7 @@ struct SidebarView: View {
     @State private var searchText = ""
     @State private var showingAddProvider = false
     @State private var showingSettings = false
+    @ScaledMetric private var zoneIconSize: CGFloat = 40
     @AppStorage("collapsedAccountIDs") private var collapsedAccountIDsStorage = ""
 
     private var collapsedAccountIDs: Set<String> {
@@ -123,9 +124,10 @@ struct SidebarView: View {
             Image(systemName: "globe")
                 .font(.title3)
                 .foregroundStyle(Color.accentColor)
-                .frame(width: 40, height: 40)
+                .frame(width: zoneIconSize, height: zoneIconSize)
                 .background(Color.accentColor.opacity(0.12))
                 .clipShape(RoundedRectangle(cornerRadius: 10))
+                .accessibilityHidden(true)
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(zone.name)

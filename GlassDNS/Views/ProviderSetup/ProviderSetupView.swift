@@ -4,13 +4,15 @@ struct ProviderSetupView: View {
     @Bindable var viewModel: ProviderSetupViewModel
     @State private var showingAddSheet = false
     @State private var showingSettings = false
+    @ScaledMetric(relativeTo: .largeTitle) private var iconSize: CGFloat = 64
 
     var body: some View {
         VStack(spacing: AppTheme.spacing) {
             Spacer()
 
             Image(systemName: "cloud.fill")
-                .font(.system(size: 64))
+                .font(.system(size: iconSize))
+                .accessibilityHidden(true)
                 .foregroundStyle(Color.accentColor.opacity(0.6))
 
             Text("Add DNS Provider")

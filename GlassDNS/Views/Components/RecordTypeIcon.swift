@@ -2,7 +2,7 @@ import SwiftUI
 
 struct RecordTypeIcon: View {
     let type: DNSRecordType
-    var size: CGFloat = 32
+    @ScaledMetric private var size: CGFloat = 32
 
     private var iconColor: Color {
         switch type {
