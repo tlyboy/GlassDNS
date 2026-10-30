@@ -27,7 +27,9 @@ struct RecordListView: View {
                 }
             }
         }
+        #if os(iOS)
         .tint(Color(.systemGray4))
+        #endif
         .overlay {
             if viewModel.isLoading && viewModel.records.isEmpty {
                 ProgressView()
@@ -43,13 +45,13 @@ struct RecordListView: View {
                 .padding(.vertical, AppTheme.smallSpacing)
         }
         .navigationTitle(viewModel.zone.name)
-        .navigationBarTitleDisplayMode(.inline)
+        .inlineNavigationTitle()
         .searchable(text: $viewModel.searchText, prompt: "Search records")
         .refreshable {
             await viewModel.loadRecords(force: true)
         }
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
+            ToolbarItem(placement: .primaryAction) {
                 Button {
                     showingAddRecord = true
                 } label: {
@@ -69,6 +71,7 @@ struct RecordListView: View {
                     Task { await viewModel.loadRecords(force: true) }
                 }
             }
+            .sheetStyle()
         }
         .confirmationDialog(
             "Are you sure you want to delete this record?",

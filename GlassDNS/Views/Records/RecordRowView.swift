@@ -3,9 +3,11 @@ import SwiftUI
 struct RecordRowView: View {
     let record: DNSRecord
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @Environment(\.backgroundProminence) private var backgroundProminence
 
     var body: some View {
         let isAccessibilitySize = dynamicTypeSize.isAccessibilitySize
+        let badgeColor = backgroundProminence == .increased ? Color.white : Color("AccentColor")
         let rowLayout = isAccessibilitySize
             ? AnyLayout(VStackLayout(alignment: .leading, spacing: 8))
             : AnyLayout(HStackLayout(spacing: 12))
@@ -38,12 +40,12 @@ struct RecordRowView: View {
             metadataLayout {
                 Text(record.type.rawValue)
                     .font(.caption2.weight(.semibold))
-                    .foregroundStyle(Color("AccentColor"))
+                    .foregroundStyle(badgeColor)
                     .lineLimit(1)
                     .fixedSize()
                     .padding(.horizontal, 8)
                     .padding(.vertical, 2)
-                    .background(Color("AccentColor").opacity(0.12))
+                    .background(badgeColor.opacity(0.15))
                     .clipShape(Capsule())
 
                 HStack(spacing: 4) {

@@ -28,13 +28,16 @@ struct ContentView: View {
                         selection: $selectedZone
                     )
                     .disabled(hasRecordChanges)
+                    .navigationSplitViewColumnWidth(min: 200, ideal: 240, max: 320)
                 } content: {
                     if let recordList {
                         RecordListView(viewModel: recordList, selection: $selectedRecordID)
                             .id(ObjectIdentifier(recordList))
                             .disabled(hasRecordChanges)
+                            .navigationSplitViewColumnWidth(min: 300, ideal: 360)
                     } else {
                         ContentUnavailableView("Select a domain", systemImage: "globe")
+                            .navigationSplitViewColumnWidth(min: 300, ideal: 360)
                     }
                 } detail: {
                     if let recordList, let record = recordList.records.first(where: { $0.id == selectedRecordID }) {
@@ -80,94 +83,5 @@ struct ContentView: View {
     private func makeRecordList() -> RecordListViewModel? {
         guard let selectedZone, let zoneList = zoneLists[selectedZone.accountID] else { return nil }
         return RecordListViewModel(zone: selectedZone.zone, provider: zoneList.provider)
-    }
-}
-
-// MARK: - Settings Sheet
-
-struct SettingsSheet: View {
-    @Bindable var providerSetupViewModel: ProviderSetupViewModel
-    @State private var accountToDelete: ProviderAccount?
-    @AppStorage("appLanguage") private var appLanguage: String = ""
-    @AppStorage("appAppearance") private var appearance: AppAppearance = .system
-    @Environment(\.dismiss) private var dismiss
-
-    private var activeLocale: Locale {
-        appLanguage.isEmpty ? .current : Locale(identifier: appLanguage)
-    }
-
-    var body: some View {
-        NavigationStack {
-            Form {
-                Section("Language") {
-                    Picker("Language", selection: $appLanguage) {
-                        Text("System").tag("")
-                        Text("English").tag("en")
-                        Text("中文").tag("zh-Hans")
-                    }
-                }
-
-                Section("Appearance") {
-                    Picker("Appearance", selection: $appearance) {
-                        ForEach(AppAppearance.allCases) { option in
-                            Text(option.label).tag(option)
-                        }
-                    }
-                }
-
-                if !providerSetupViewModel.accounts.isEmpty {
-                    Section("Providers") {
-                        ForEach(providerSetupViewModel.accounts) { account in
-                            Label {
-                                VStack(alignment: .leading, spacing: 2) {
-                                    Text(account.displayName)
-                                    Text(account.providerType.displayName)
-                                        .font(.caption)
-                                        .foregroundStyle(Color.secondary)
-                                }
-                            } icon: {
-                                Image(systemName: account.providerType.icon)
-                                    .foregroundStyle(Color.accentColor)
-                            }
-                            .contextMenu {
-                                Button(role: .destructive) {
-                                    accountToDelete = account
-                                } label: {
-                                    Label("Delete", systemImage: "trash")
-                                }
-                            }
-                        }
-                        .onDelete { offsets in
-                            accountToDelete = offsets.first.map { providerSetupViewModel.accounts[$0] }
-                        }
-                    }
-                }
-            }
-            .pickerStyle(.segmented)
-            .confirmationDialog(
-                "Are you sure you want to delete this provider?",
-                isPresented: .init(
-                    get: { accountToDelete != nil },
-                    set: { if !$0 { accountToDelete = nil } }
-                ),
-                titleVisibility: .visible
-            ) {
-                Button("Delete", role: .destructive) {
-                    if let accountToDelete {
-                        providerSetupViewModel.deleteAccount(accountToDelete)
-                    }
-                }
-            }
-            .navigationTitle("Settings")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Close") { dismiss() }
-                        .foregroundStyle(Color.secondary)
-                }
-            }
-        }
-        .environment(\.locale, activeLocale)
-        .id(appLanguage)
     }
 }

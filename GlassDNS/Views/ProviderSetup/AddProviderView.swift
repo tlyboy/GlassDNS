@@ -61,8 +61,9 @@ struct AddProviderView: View {
                     }
                 }
             }
+            .sheetStyle()
             .navigationTitle("Add Provider")
-            .navigationBarTitleDisplayMode(.inline)
+            .inlineNavigationTitle()
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") {
@@ -130,7 +131,6 @@ struct AddProviderView: View {
                 Text("No credentials required. Example mode uses sample data for you to explore all features.")
             }
         }
-        .autocorrectionDisabled()
-        .textInputAutocapitalization(.never)
+        .plainTextEntry()
     }
 }

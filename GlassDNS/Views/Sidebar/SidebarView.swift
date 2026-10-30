@@ -7,7 +7,6 @@ struct SidebarView: View {
 
     @State private var searchText = ""
     @State private var showingAddProvider = false
-    @State private var showingSettings = false
     @ScaledMetric private var zoneIconSize: CGFloat = 40
     @AppStorage("collapsedAccountIDs") private var collapsedAccountIDsStorage = ""
 
@@ -52,7 +51,7 @@ struct SidebarView: View {
             }
         }
         .navigationTitle("Domains")
-        .searchable(text: $searchText, prompt: "Search domains")
+        .searchable(text: $searchText, placement: searchPlacement, prompt: "Search domains")
         .refreshable {
             await withDiscardingTaskGroup { group in
                 for zoneList in zoneLists.values {
@@ -61,14 +60,11 @@ struct SidebarView: View {
             }
         }
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    showingSettings = true
-                } label: {
-                    Label("Settings", systemImage: "gearshape")
-                        .foregroundStyle(Color.accentColor)
-                }
+            #if os(iOS)
+            ToolbarItem(placement: .primaryAction) {
+                SettingsButton(providerSetupViewModel: providerSetupViewModel)
             }
+            #endif
         }
         .onChange(of: providerSetupViewModel.accounts.map(\.id)) { _, accountIDs in
             collapsedAccountIDs.formIntersection(accountIDs)
@@ -76,9 +72,14 @@ struct SidebarView: View {
         .sheet(isPresented: $showingAddProvider) {
             AddProviderView(viewModel: providerSetupViewModel, isPresented: $showingAddProvider)
         }
-        .sheet(isPresented: $showingSettings) {
-            SettingsSheet(providerSetupViewModel: providerSetupViewModel)
-        }
+    }
+
+    private var searchPlacement: SearchFieldPlacement {
+        #if os(macOS)
+        .sidebar
+        #else
+        .automatic
+        #endif
     }
 
     private func matchingZones(_ zones: [Zone]) -> [Zone] {
@@ -119,7 +120,23 @@ struct SidebarView: View {
         Label(account.displayName, systemImage: account.providerType.icon)
     }
 
+    @ViewBuilder
     private func zoneRow(_ zone: Zone) -> some View {
+        #if os(macOS)
+        Label {
+            HStack {
+                Text(zone.name)
+                Spacer()
+                if !zone.isActive {
+                    statusText(zone)
+                        .font(.caption)
+                        .foregroundStyle(Color.secondary)
+                }
+            }
+        } icon: {
+            Image(systemName: "globe")
+        }
+        #else
         HStack(spacing: 14) {
             Image(systemName: "globe")
                 .font(.title3)
@@ -145,6 +162,7 @@ struct SidebarView: View {
                 }
             }
         }
+        #endif
     }
 
     private func statusText(_ zone: Zone) -> Text {

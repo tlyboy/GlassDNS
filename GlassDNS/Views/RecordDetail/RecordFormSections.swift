@@ -14,9 +14,9 @@ struct RecordFormSections: View {
         }
 
         Section {
-            TextField("e.g. www", text: $viewModel.name)
-                .autocorrectionDisabled()
-                .textInputAutocapitalization(.never)
+            TextField("Name", text: $viewModel.name, prompt: Text("e.g. www"))
+                .labelsHidden()
+                .plainTextEntry()
         } header: {
             Text("Name")
         } footer: {
@@ -27,9 +27,9 @@ struct RecordFormSections: View {
         }
 
         Section {
-            TextField(contentPlaceholder, text: contentBinding)
-                .autocorrectionDisabled()
-                .textInputAutocapitalization(.never)
+            TextField("Content", text: contentBinding, prompt: Text(contentPlaceholder))
+                .labelsHidden()
+                .plainTextEntry()
         } header: {
             Text("Content")
         } footer: {
@@ -38,8 +38,11 @@ struct RecordFormSections: View {
 
         if viewModel.type.requiresPriority {
             Section {
-                TextField("10", value: $viewModel.priority, format: .number)
+                TextField("Priority", value: $viewModel.priority, format: .number, prompt: Text(verbatim: "10"))
+                    .labelsHidden()
+                    #if os(iOS)
                     .keyboardType(.numberPad)
+                    #endif
             } header: {
                 Text("Priority")
             } footer: {

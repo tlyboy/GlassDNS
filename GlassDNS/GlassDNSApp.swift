@@ -8,13 +8,31 @@ struct GlassDNSApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView(providerSetupViewModel: providerSetupViewModel)
-                .preferredColorScheme(appearance.colorScheme)
-                .environment(\.locale, appLanguage.isEmpty ? .current : Locale(identifier: appLanguage))
-                .id(appLanguage)
+            applyPreferences(ContentView(providerSetupViewModel: providerSetupViewModel))
+                #if os(macOS)
+                .frame(minWidth: 900, minHeight: 560)
+                #endif
         }
         .commands {
             RecordCommands()
         }
+
+        #if os(macOS)
+        Settings {
+            applyPreferences(SettingsView(providerSetupViewModel: providerSetupViewModel))
+                .frame(width: 460)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        #endif
+    }
+
+    private func applyPreferences(_ content: some View) -> some View {
+        content
+            .preferredColorScheme(appearance.colorScheme)
+            .environment(\.locale, appLanguage.isEmpty ? .current : Locale(identifier: appLanguage))
+            #if os(macOS)
+            .formStyle(.grouped)
+            #endif
+            .id(appLanguage)
     }
 }

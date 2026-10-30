@@ -37,7 +37,7 @@ struct RecordView: View {
             }
         }
         .navigationTitle(viewModel.isNewRecord ? "Add Record" : "Record Details")
-        .navigationBarTitleDisplayMode(.inline)
+        .inlineNavigationTitle()
         .navigationBarBackButtonHidden(viewModel.hasChanges)
         .interactiveDismissDisabled(viewModel.hasChanges)
         .refreshable {

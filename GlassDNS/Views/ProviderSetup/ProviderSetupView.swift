@@ -3,7 +3,6 @@ import SwiftUI
 struct ProviderSetupView: View {
     @Bindable var viewModel: ProviderSetupViewModel
     @State private var showingAddSheet = false
-    @State private var showingSettings = false
     @ScaledMetric(relativeTo: .largeTitle) private var iconSize: CGFloat = 64
 
     var body: some View {
@@ -53,20 +52,14 @@ struct ProviderSetupView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .navigationTitle("GlassDNS")
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    showingSettings = true
-                } label: {
-                    Label("Settings", systemImage: "gearshape")
-                        .foregroundStyle(Color.accentColor)
-                }
+            #if os(iOS)
+            ToolbarItem(placement: .primaryAction) {
+                SettingsButton(providerSetupViewModel: viewModel)
             }
+            #endif
         }
         .sheet(isPresented: $showingAddSheet) {
             AddProviderView(viewModel: viewModel, isPresented: $showingAddSheet)
-        }
-        .sheet(isPresented: $showingSettings) {
-            SettingsSheet(providerSetupViewModel: viewModel)
         }
     }
 }

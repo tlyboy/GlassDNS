@@ -1,12 +1,12 @@
 # GlassDNS
 
-🌐 A mobile DNS configuration tool for iOS with Liquid Glass UI
+🌐 A DNS configuration tool for iPhone, iPad, and Mac with Liquid Glass UI
 
 <div align="center"><img alt="GlassDNS banner" src="img/banner.png" width="280"></div>
 
 | Category  | Stack                        |
 | --------- | ---------------------------- |
-| Platform  | iOS 26+                      |
+| Platform  | iOS 26+ / macOS 26+          |
 | Framework | SwiftUI                      |
 | Language  | Swift 5                      |
 | Design    | Liquid Glass / Glassmorphism |
@@ -15,8 +15,8 @@
 
 ### Requirements
 
-- Xcode 16+
-- iOS 26.0+
+- Xcode 26+
+- iOS 26.4+ or macOS 26.0+
 - Apple Developer account (for device deployment)
 
 ### Build from Source
@@ -27,7 +27,7 @@ cd GlassDNS
 open GlassDNS.xcodeproj
 ```
 
-Select your target device or simulator in Xcode, then press `Cmd + R` to build and run.
+Select a device, simulator, or My Mac in Xcode, then press `Cmd + R` to build and run.
 
 ## Usage
 
@@ -54,7 +54,7 @@ Select your target device or simulator in Xcode, then press `Cmd + R` to build a
 ### Features
 
 - **Multi-provider** — Manage multiple DNS providers in one app
-- **Secure storage** — API keys stored in iOS Keychain, never leaves your device
+- **Secure storage** — API keys stored in the system Keychain, never leaves your device
 - **Bilingual** — English and Chinese (Simplified), switchable in settings
 - **Appearance** — Light, dark or follow the system, with native Liquid Glass and a blue accent
 
