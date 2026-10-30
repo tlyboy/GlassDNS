@@ -45,10 +45,8 @@ struct RecordListView: View {
                     .listRowInsets(EdgeInsets())
             }
         }
-        #if os(macOS)
         .listStyle(.inset)
-        #else
-        .listStyle(.plain)
+        #if os(iOS)
         .tint(Color(.systemGray4))
         #endif
         .overlay {
