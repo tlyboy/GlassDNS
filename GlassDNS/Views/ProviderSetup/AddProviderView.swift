@@ -44,7 +44,7 @@ struct AddProviderView: View {
             Form {
                 Picker(selection: $selectedType) {
                     ForEach(ProviderType.providerCases, id: \.rawValue) { type in
-                        Label(type.displayName, systemImage: type.icon).tag(type)
+                        Label(LocalizedStringKey(type.displayName), systemImage: type.icon).tag(type)
                     }
                 } label: {
                     Text("Provider")

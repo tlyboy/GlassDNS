@@ -30,7 +30,7 @@ struct SettingsView: View {
                         Label {
                             VStack(alignment: .leading, spacing: 2) {
                                 Text(account.displayName)
-                                Text(account.providerType.displayName)
+                                Text(LocalizedStringKey(account.providerType.displayName))
                                     .font(.caption)
                                     .foregroundStyle(Color.secondary)
                             }

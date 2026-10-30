@@ -11,7 +11,7 @@ struct RecordTypePicker: View {
                 }
 
                 ForEach(DNSRecordType.allCases) { type in
-                    FilterChip(title: type.rawValue, isSelected: selectedType == type) {
+                    FilterChip(title: LocalizedStringKey(type.rawValue), isSelected: selectedType == type) {
                         selectedType = type
                     }
                 }
@@ -24,7 +24,7 @@ struct RecordTypePicker: View {
 }
 
 private struct FilterChip: View {
-    let title: String
+    let title: LocalizedStringKey
     let isSelected: Bool
     let action: () -> Void
 
