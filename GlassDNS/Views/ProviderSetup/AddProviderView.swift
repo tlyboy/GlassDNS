@@ -49,7 +49,11 @@ struct AddProviderView: View {
                 } label: {
                     Text("Provider")
                 }
+                #if os(macOS)
+                .pickerStyle(.menu)
+                #else
                 .pickerStyle(.inline)
+                #endif
 
                 credentialsSection
 
@@ -93,26 +97,14 @@ struct AddProviderView: View {
 
     private var credentialsSection: some View {
         Section {
-            LabeledContent("Display Name") {
-                TextField("Optional", text: $displayName)
-                    .multilineTextAlignment(.trailing)
-            }
+            credentialField("Display Name", prompt: "Optional", text: $displayName)
 
             switch selectedType {
             case .cloudflare:
-                LabeledContent("API Token") {
-                    SecureField("Enter API Token", text: $apiToken)
-                        .multilineTextAlignment(.trailing)
-                }
+                credentialField("API Token", prompt: "Enter API Token", text: $apiToken, isSecure: true)
             case .aliyun:
-                LabeledContent("AccessKey ID") {
-                    TextField("Enter AccessKey ID", text: $accessKeyId)
-                        .multilineTextAlignment(.trailing)
-                }
-                LabeledContent("AccessKey Secret") {
-                    SecureField("Enter AccessKey Secret", text: $accessKeySecret)
-                        .multilineTextAlignment(.trailing)
-                }
+                credentialField("AccessKey ID", prompt: "Enter AccessKey ID", text: $accessKeyId)
+                credentialField("AccessKey Secret", prompt: "Enter AccessKey Secret", text: $accessKeySecret, isSecure: true)
             case .example:
                 EmptyView()
             }
@@ -132,5 +124,32 @@ struct AddProviderView: View {
             }
         }
         .plainTextEntry()
+    }
+
+    @ViewBuilder
+    private func credentialField(
+        _ title: LocalizedStringKey,
+        prompt: LocalizedStringKey,
+        text: Binding<String>,
+        isSecure: Bool = false
+    ) -> some View {
+        #if os(macOS)
+        if isSecure {
+            SecureField(title, text: text, prompt: Text(prompt))
+        } else {
+            TextField(title, text: text, prompt: Text(prompt))
+        }
+        #else
+        LabeledContent(title) {
+            Group {
+                if isSecure {
+                    SecureField(prompt, text: text)
+                } else {
+                    TextField(prompt, text: text)
+                }
+            }
+            .multilineTextAlignment(.trailing)
+        }
+        #endif
     }
 }

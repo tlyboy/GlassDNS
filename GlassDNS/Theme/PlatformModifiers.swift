@@ -19,7 +19,9 @@ extension View {
 
     func sheetStyle() -> some View {
         #if os(macOS)
-        formStyle(.grouped).frame(minWidth: 440, minHeight: 420)
+        formStyle(.grouped)
+            .frame(width: 460)
+            .fixedSize(horizontal: false, vertical: true)
         #else
         self
         #endif

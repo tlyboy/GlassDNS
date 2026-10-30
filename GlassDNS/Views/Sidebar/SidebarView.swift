@@ -36,15 +36,22 @@ struct SidebarView: View {
                 }
             }
 
+            #if os(iOS)
             Section {
-                Button {
-                    showingAddProvider = true
-                } label: {
-                    Label("Add Provider", systemImage: "plus.circle")
-                }
+                addProviderButton
             }
+            #endif
         }
         .listStyle(.sidebar)
+        #if os(macOS)
+        .safeAreaInset(edge: .bottom) {
+            addProviderButton
+                .buttonStyle(.borderless)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 10)
+        }
+        #endif
         .overlay {
             if !searchText.isEmpty && zoneLists.values.allSatisfy({ matchingZones($0.zones).isEmpty }) {
                 ContentUnavailableView("No Matching Domains", systemImage: "globe")
@@ -71,6 +78,14 @@ struct SidebarView: View {
         }
         .sheet(isPresented: $showingAddProvider) {
             AddProviderView(viewModel: providerSetupViewModel, isPresented: $showingAddProvider)
+        }
+    }
+
+    private var addProviderButton: some View {
+        Button {
+            showingAddProvider = true
+        } label: {
+            Label("Add Provider", systemImage: "plus.circle")
         }
     }
 
