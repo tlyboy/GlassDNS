@@ -49,11 +49,7 @@ struct AddProviderView: View {
                 } label: {
                     Text("Provider")
                 }
-                #if os(macOS)
                 .pickerStyle(.menu)
-                #else
-                .pickerStyle(.inline)
-                #endif
 
                 credentialsSection
 

@@ -70,18 +70,21 @@ struct SettingsView: View {
     }
 }
 
-#if os(iOS)
 struct SettingsButton: View {
     @Bindable var providerSetupViewModel: ProviderSetupViewModel
     @State private var isPresented = false
     @AppStorage("appLanguage") private var appLanguage: String = ""
 
     var body: some View {
+        #if os(macOS)
+        SettingsLink {
+            label
+        }
+        #else
         Button {
             isPresented = true
         } label: {
-            Label("Settings", systemImage: "gearshape")
-                .foregroundStyle(Color.accentColor)
+            label
         }
         .sheet(isPresented: $isPresented) {
             NavigationStack {
@@ -98,6 +101,11 @@ struct SettingsButton: View {
             .environment(\.locale, appLanguage.isEmpty ? .current : Locale(identifier: appLanguage))
             .id(appLanguage)
         }
+        #endif
+    }
+
+    private var label: some View {
+        Label("Settings", systemImage: "gearshape")
+            .foregroundStyle(Color.accentColor)
     }
 }
-#endif

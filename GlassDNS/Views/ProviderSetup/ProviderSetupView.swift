@@ -52,11 +52,9 @@ struct ProviderSetupView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .navigationTitle("GlassDNS")
         .toolbar {
-            #if os(iOS)
             ToolbarItem(placement: .primaryAction) {
                 SettingsButton(providerSetupViewModel: viewModel)
             }
-            #endif
         }
         .sheet(isPresented: $showingAddSheet) {
             AddProviderView(viewModel: viewModel, isPresented: $showingAddSheet)

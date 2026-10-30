@@ -36,22 +36,18 @@ struct SidebarView: View {
                 }
             }
 
-            #if os(iOS)
             Section {
-                addProviderButton
+                Button {
+                    showingAddProvider = true
+                } label: {
+                    Label("Add Provider", systemImage: "plus.circle")
+                }
+                #if os(macOS)
+                .buttonStyle(.plain)
+                #endif
             }
-            #endif
         }
         .listStyle(.sidebar)
-        #if os(macOS)
-        .safeAreaInset(edge: .bottom) {
-            addProviderButton
-                .buttonStyle(.borderless)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal, 12)
-                .padding(.vertical, 10)
-        }
-        #endif
         .overlay {
             if !searchText.isEmpty && zoneLists.values.allSatisfy({ matchingZones($0.zones).isEmpty }) {
                 ContentUnavailableView("No Matching Domains", systemImage: "globe")
@@ -67,25 +63,15 @@ struct SidebarView: View {
             }
         }
         .toolbar {
-            #if os(iOS)
             ToolbarItem(placement: .primaryAction) {
                 SettingsButton(providerSetupViewModel: providerSetupViewModel)
             }
-            #endif
         }
         .onChange(of: providerSetupViewModel.accounts.map(\.id)) { _, accountIDs in
             collapsedAccountIDs.formIntersection(accountIDs)
         }
         .sheet(isPresented: $showingAddProvider) {
             AddProviderView(viewModel: providerSetupViewModel, isPresented: $showingAddProvider)
-        }
-    }
-
-    private var addProviderButton: some View {
-        Button {
-            showingAddProvider = true
-        } label: {
-            Label("Add Provider", systemImage: "plus.circle")
         }
     }
 
@@ -135,23 +121,7 @@ struct SidebarView: View {
         Label(account.displayName, systemImage: account.providerType.icon)
     }
 
-    @ViewBuilder
     private func zoneRow(_ zone: Zone) -> some View {
-        #if os(macOS)
-        Label {
-            HStack {
-                Text(zone.name)
-                Spacer()
-                if !zone.isActive {
-                    statusText(zone)
-                        .font(.caption)
-                        .foregroundStyle(Color.secondary)
-                }
-            }
-        } icon: {
-            Image(systemName: "globe")
-        }
-        #else
         HStack(spacing: 14) {
             Image(systemName: "globe")
                 .font(.title3)
@@ -177,7 +147,6 @@ struct SidebarView: View {
                 }
             }
         }
-        #endif
     }
 
     private func statusText(_ zone: Zone) -> Text {
