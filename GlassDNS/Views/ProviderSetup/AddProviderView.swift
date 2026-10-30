@@ -61,9 +61,8 @@ struct AddProviderView: View {
                     }
                 }
             }
-            .sheetStyle()
             .navigationTitle("Add Provider")
-            .inlineNavigationTitle()
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") {
@@ -119,7 +118,8 @@ struct AddProviderView: View {
                 Text("No credentials required. Example mode uses sample data for you to explore all features.")
             }
         }
-        .plainTextEntry()
+        .autocorrectionDisabled()
+        .textInputAutocapitalization(.never)
     }
 
     @ViewBuilder
@@ -129,13 +129,6 @@ struct AddProviderView: View {
         text: Binding<String>,
         isSecure: Bool = false
     ) -> some View {
-        #if os(macOS)
-        if isSecure {
-            SecureField(title, text: text, prompt: Text(prompt))
-        } else {
-            TextField(title, text: text, prompt: Text(prompt))
-        }
-        #else
         LabeledContent(title) {
             Group {
                 if isSecure {
@@ -146,6 +139,5 @@ struct AddProviderView: View {
             }
             .multilineTextAlignment(.trailing)
         }
-        #endif
     }
 }

@@ -42,22 +42,17 @@ struct SidebarView: View {
                 } label: {
                     Label("Add Provider", systemImage: "plus.circle")
                 }
-                #if os(macOS)
-                .buttonStyle(.plain)
-                #endif
             }
         }
         .listStyle(.sidebar)
-        #if os(iOS)
         .tint(Color(.systemGray4))
-        #endif
         .overlay {
             if !searchText.isEmpty && zoneLists.values.allSatisfy({ matchingZones($0.zones).isEmpty }) {
                 ContentUnavailableView("No Matching Domains", systemImage: "globe")
             }
         }
         .navigationTitle("Domains")
-        .searchable(text: $searchText, placement: searchPlacement, prompt: "Search domains")
+        .searchable(text: $searchText, prompt: "Search domains")
         .refreshable {
             await withDiscardingTaskGroup { group in
                 for zoneList in zoneLists.values {
@@ -76,14 +71,6 @@ struct SidebarView: View {
         .sheet(isPresented: $showingAddProvider) {
             AddProviderView(viewModel: providerSetupViewModel, isPresented: $showingAddProvider)
         }
-    }
-
-    private var searchPlacement: SearchFieldPlacement {
-        #if os(macOS)
-        .sidebar
-        #else
-        .automatic
-        #endif
     }
 
     private func matchingZones(_ zones: [Zone]) -> [Zone] {

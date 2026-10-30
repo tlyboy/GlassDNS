@@ -76,11 +76,6 @@ struct SettingsButton: View {
     @AppStorage("appLanguage") private var appLanguage: String = ""
 
     var body: some View {
-        #if os(macOS)
-        SettingsLink {
-            label
-        }
-        #else
         Button {
             isPresented = true
         } label: {
@@ -90,7 +85,7 @@ struct SettingsButton: View {
             NavigationStack {
                 SettingsView(providerSetupViewModel: providerSetupViewModel)
                     .navigationTitle("Settings")
-                    .inlineNavigationTitle()
+                    .navigationBarTitleDisplayMode(.inline)
                     .toolbar {
                         ToolbarItem(placement: .cancellationAction) {
                             Button("Close") { isPresented = false }
@@ -101,7 +96,6 @@ struct SettingsButton: View {
             .environment(\.locale, appLanguage.isEmpty ? .current : Locale(identifier: appLanguage))
             .id(appLanguage)
         }
-        #endif
     }
 
     private var label: some View {

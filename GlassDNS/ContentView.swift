@@ -28,16 +28,13 @@ struct ContentView: View {
                         selection: $selectedZone
                     )
                     .disabled(hasRecordChanges)
-                    .navigationSplitViewColumnWidth(min: 200, ideal: 240, max: 320)
                 } content: {
                     if let recordList {
                         RecordListView(viewModel: recordList, selection: $selectedRecordID)
                             .id(ObjectIdentifier(recordList))
                             .disabled(hasRecordChanges)
-                            .navigationSplitViewColumnWidth(min: 300, ideal: 360)
                     } else {
                         ContentUnavailableView("Select a domain", systemImage: "globe")
-                            .navigationSplitViewColumnWidth(min: 300, ideal: 360)
                     }
                 } detail: {
                     if let recordList, let record = recordList.records.first(where: { $0.id == selectedRecordID }) {
