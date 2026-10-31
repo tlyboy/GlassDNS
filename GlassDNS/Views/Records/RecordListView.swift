@@ -35,7 +35,6 @@ struct RecordListView: View {
                         viewModel.searchText.isEmpty && viewModel.filterType == nil ? "No DNS Records" : "No Matching Records",
                         systemImage: "doc.text"
                     )
-                    .listRowSeparator(.hidden)
                     .listRowBackground(Color.clear)
                 }
             } header: {
@@ -45,7 +44,7 @@ struct RecordListView: View {
                     .listRowInsets(EdgeInsets())
             }
         }
-        .listStyle(.inset)
+        .listStyle(.insetGrouped)
         .tint(Color(.systemGray4))
         .overlay {
             if viewModel.isLoading && viewModel.records.isEmpty {

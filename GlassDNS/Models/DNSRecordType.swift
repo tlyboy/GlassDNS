@@ -24,18 +24,6 @@ nonisolated enum DNSRecordType: String, Codable, CaseIterable, Identifiable, Sen
         }
     }
 
-    var color: String {
-        switch self {
-        case .a: return "green"
-        case .aaaa: return "blue"
-        case .cname: return "orange"
-        case .mx: return "purple"
-        case .txt: return "yellow"
-        case .ns: return "red"
-        case .srv: return "pink"
-        }
-    }
-
     var supportsProxy: Bool {
         switch self {
         case .a, .aaaa, .cname: return true
