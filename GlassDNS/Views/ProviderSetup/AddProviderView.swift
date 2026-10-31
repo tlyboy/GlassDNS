@@ -52,6 +52,12 @@ struct AddProviderView: View {
                     }
                 } label: {
                     Text("Provider")
+                } currentValueLabel: {
+                    Label {
+                        Text(" ") + Text(LocalizedStringKey(selectedType.displayName))
+                    } icon: {
+                        Image(systemName: selectedType.icon)
+                    }
                 }
                 .pickerStyle(.menu)
 

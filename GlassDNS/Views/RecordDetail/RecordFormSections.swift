@@ -5,10 +5,14 @@ struct RecordFormSections: View {
 
     var body: some View {
         Section {
-            Picker("Type", selection: $viewModel.type) {
+            Picker(selection: $viewModel.type) {
                 ForEach(DNSRecordType.allCases) { type in
                     Label(type.rawValue, systemImage: type.icon).tag(type)
                 }
+            } label: {
+                Text("Type")
+            } currentValueLabel: {
+                Label(" " + viewModel.type.rawValue, systemImage: viewModel.type.icon)
             }
             .pickerStyle(.menu)
         }
