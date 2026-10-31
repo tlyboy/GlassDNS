@@ -64,6 +64,8 @@ struct SettingsButton: View {
     @Bindable var providerSetupViewModel: ProviderSetupViewModel
     @State private var isPresented = false
     @AppStorage("appLanguage") private var appLanguage: String = ""
+    @AppStorage("appAppearance") private var appearance: AppAppearance = .system
+    @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
         Button {
@@ -83,6 +85,7 @@ struct SettingsButton: View {
                         }
                     }
             }
+            .preferredColorScheme(appearance.colorScheme ?? colorScheme)
             .environment(\.locale, appLanguage.isEmpty ? .current : Locale(identifier: appLanguage))
             .id(appLanguage)
         }
