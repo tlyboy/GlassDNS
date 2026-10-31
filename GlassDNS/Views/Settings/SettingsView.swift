@@ -28,12 +28,8 @@ struct SettingsView: View {
                 Section("Providers") {
                     ForEach(providerSetupViewModel.accounts) { account in
                         Label {
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text(account.displayName)
-                                Text(LocalizedStringKey(account.providerType.displayName))
-                                    .font(.caption)
-                                    .foregroundStyle(Color.secondary)
-                            }
+                            Text(account.displayName)
+                            Text(LocalizedStringKey(account.providerType.displayName))
                         } icon: {
                             Image(systemName: account.providerType.icon)
                                 .foregroundStyle(Color.accentColor)

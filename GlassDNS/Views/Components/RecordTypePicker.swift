@@ -19,7 +19,6 @@ struct RecordTypePicker: View {
             .padding(.horizontal)
             .padding(.vertical, 1)
         }
-        .scrollClipDisabled()
     }
 }
 
