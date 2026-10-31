@@ -129,6 +129,9 @@ struct SidebarView: View {
         case "pending": Text("Pending")
         case "initializing": Text("Initializing")
         case "moved": Text("Moved")
+        case "deleted": Text("Deleted")
+        case "deactivated": Text("Deactivated")
+        case "read only": Text("Read Only")
         default: Text(zone.status.capitalized)
         }
     }
