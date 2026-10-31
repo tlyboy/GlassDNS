@@ -29,13 +29,16 @@ struct ContentView: View {
                     )
                     .disabled(hasRecordChanges)
                 } content: {
-                    if let recordList {
-                        RecordListView(viewModel: recordList, selection: $selectedRecordID)
-                            .id(ObjectIdentifier(recordList))
-                            .disabled(hasRecordChanges)
-                    } else {
-                        ContentUnavailableView("Select a domain", systemImage: "globe")
+                    Group {
+                        if let recordList {
+                            RecordListView(viewModel: recordList, selection: $selectedRecordID)
+                                .id(ObjectIdentifier(recordList))
+                                .disabled(hasRecordChanges)
+                        } else {
+                            ContentUnavailableView("Select a domain", systemImage: "globe")
+                        }
                     }
+                    .navigationSplitViewColumnWidth(min: 300, ideal: 340, max: 420)
                 } detail: {
                     if let recordList, let record = recordList.records.first(where: { $0.id == selectedRecordID }) {
                         RecordView(
