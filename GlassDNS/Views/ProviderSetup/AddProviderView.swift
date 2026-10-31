@@ -25,6 +25,10 @@ struct AddProviderView: View {
         }
     }
 
+    private var canAdd: Bool {
+        isFormValid && !viewModel.isLoading
+    }
+
     private var packedToken: String {
         switch selectedType {
         case .cloudflare:
@@ -83,9 +87,9 @@ struct AddProviderView: View {
                         }
                     } label: {
                         Text("Add")
-                            .foregroundStyle(.white)
+                            .foregroundStyle(canAdd ? Color.white : Color.secondary)
                     }
-                    .disabled(!isFormValid || viewModel.isLoading)
+                    .disabled(!canAdd)
                 }
             }
         }

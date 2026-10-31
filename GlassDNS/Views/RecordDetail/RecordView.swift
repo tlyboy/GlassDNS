@@ -56,7 +56,7 @@ struct RecordView: View {
                             Task { await save() }
                         } label: {
                             Text("Save")
-                                .foregroundStyle(.white)
+                                .foregroundStyle(viewModel.canAttemptSave ? Color.white : Color.secondary)
                         }
                         .disabled(!viewModel.canAttemptSave)
                     }
