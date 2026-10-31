@@ -65,7 +65,6 @@ struct RecordListView: View {
                     showingAddRecord = true
                 } label: {
                     Label("Add Record", systemImage: "plus")
-                        .foregroundStyle(Color.accentColor)
                 }
             }
             DefaultToolbarItem(kind: .search, placement: .bottomBar)

@@ -68,10 +68,9 @@ struct AddProviderView: View {
                     Button("Cancel") {
                         isPresented = false
                     }
-                    .foregroundStyle(Color.secondary)
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Add") {
+                    Button("Add", role: .confirm) {
                         Task {
                             let success = await viewModel.addAccount(
                                 displayName: displayName.isEmpty ? selectedType.displayName : displayName,
@@ -83,7 +82,6 @@ struct AddProviderView: View {
                             }
                         }
                     }
-                    .foregroundStyle(Color.accentColor)
                     .disabled(!isFormValid || viewModel.isLoading)
                 }
             }

@@ -47,16 +47,14 @@ struct RecordView: View {
             if viewModel.isNewRecord || viewModel.hasChanges {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel", action: cancel)
-                        .foregroundStyle(Color.secondary)
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     if viewModel.isSaving {
                         ProgressView()
                     } else {
-                        Button("Save") {
+                        Button("Save", role: .confirm) {
                             Task { await save() }
                         }
-                        .foregroundStyle(Color.accentColor)
                         .disabled(!viewModel.canAttemptSave)
                     }
                 }

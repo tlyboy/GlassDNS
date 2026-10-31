@@ -79,7 +79,6 @@ struct SettingsButton: View {
                     .toolbar {
                         ToolbarItem(placement: .cancellationAction) {
                             Button("Close") { isPresented = false }
-                                .foregroundStyle(Color.secondary)
                         }
                     }
             }
@@ -91,6 +90,5 @@ struct SettingsButton: View {
 
     private var label: some View {
         Label("Settings", systemImage: "gearshape")
-            .foregroundStyle(Color.accentColor)
     }
 }
