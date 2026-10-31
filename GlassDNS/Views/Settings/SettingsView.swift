@@ -34,14 +34,8 @@ struct SettingsView: View {
                             Image(systemName: account.providerType.icon)
                                 .foregroundStyle(Color.accentColor)
                         }
-                        .contextMenu {
-                            Button(role: .destructive) {
-                                accountToDelete = account
-                            } label: {
-                                Label("Delete", systemImage: "trash")
-                            }
-                        }
                     }
+                    .onMove(perform: providerSetupViewModel.moveAccounts)
                     .onDelete { offsets in
                         accountToDelete = offsets.first.map { providerSetupViewModel.accounts[$0] }
                     }

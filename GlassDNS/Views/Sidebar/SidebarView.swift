@@ -7,7 +7,6 @@ struct SidebarView: View {
 
     @State private var searchText = ""
     @State private var showingAddProvider = false
-    @ScaledMetric private var zoneIconSize: CGFloat = 40
     @AppStorage("collapsedAccountIDs") private var collapsedAccountIDsStorage = ""
 
     private var collapsedAccountIDs: Set<String> {
@@ -31,7 +30,7 @@ struct SidebarView: View {
                             }
                         }
                     } header: {
-                        sectionHeader(account)
+                        sectionHeader(account, isLoading: zoneList.map { $0.isLoading && $0.zones.isEmpty } ?? false)
                     }
                 }
             }
@@ -80,9 +79,8 @@ struct SidebarView: View {
 
     @ViewBuilder
     private func statusRow(_ zoneList: ZoneListViewModel) -> some View {
-        if zoneList.isLoading && zoneList.zones.isEmpty {
-            ProgressView()
-                .frame(maxWidth: .infinity)
+        if zoneList.isLoading {
+            EmptyView()
         } else if let error = zoneList.errorMessage {
             Text(error)
                 .font(.subheadline)
@@ -107,31 +105,25 @@ struct SidebarView: View {
         )
     }
 
-    private func sectionHeader(_ account: ProviderAccount) -> some View {
-        Label(account.displayName, systemImage: account.providerType.icon)
+    private func sectionHeader(_ account: ProviderAccount, isLoading: Bool) -> some View {
+        HStack {
+            Label(account.displayName, systemImage: account.providerType.icon)
+            if isLoading {
+                ProgressView()
+                    .controlSize(.small)
+            }
+        }
     }
 
     private func zoneRow(_ zone: Zone) -> some View {
-        HStack(spacing: 14) {
-            Image(systemName: "globe")
-                .font(.title3)
-                .foregroundStyle(Color("AccentColor"))
-                .frame(width: zoneIconSize, height: zoneIconSize)
-                .background(Color("AccentColor").opacity(0.12))
-                .clipShape(RoundedRectangle(cornerRadius: 10))
-                .accessibilityHidden(true)
-
-            VStack(alignment: .leading, spacing: 4) {
-                Text(zone.name)
-                    .font(.headline)
-                    .foregroundStyle(Color.primary)
-
-                if !zone.isActive {
-                    statusText(zone)
-                        .font(.caption)
-                        .foregroundStyle(Color.secondary)
-                }
+        Label {
+            Text(zone.name)
+            if !zone.isActive {
+                statusText(zone)
             }
+        } icon: {
+            Image(systemName: "globe")
+                .foregroundStyle(Color("AccentColor"))
         }
     }
 
