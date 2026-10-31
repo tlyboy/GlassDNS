@@ -193,12 +193,12 @@
         }
       }
     },
-    "Alibaba Cloud DNS" : {
+    "Alibaba Cloud" : {
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "阿里云 DNS"
+            "value" : "阿里云"
           }
         }
       }

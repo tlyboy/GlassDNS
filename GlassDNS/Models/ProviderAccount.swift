@@ -8,7 +8,7 @@ nonisolated enum ProviderType: String, Codable, CaseIterable, Sendable {
     var displayName: String {
         switch self {
         case .cloudflare: return "Cloudflare"
-        case .aliyun: return "Alibaba Cloud DNS"
+        case .aliyun: return "Alibaba Cloud"
         case .example: return "Example"
         }
     }
