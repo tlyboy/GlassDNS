@@ -118,6 +118,7 @@ struct SidebarView: View {
     private func zoneRow(_ zone: Zone) -> some View {
         Label {
             Text(zone.name)
+                .foregroundStyle(Color.primary)
             if !zone.isActive {
                 statusText(zone)
             }
