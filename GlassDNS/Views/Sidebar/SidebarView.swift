@@ -126,11 +126,7 @@ struct SidebarView: View {
                     .font(.headline)
                     .foregroundStyle(Color.primary)
 
-                HStack(spacing: 6) {
-                    Circle()
-                        .fill(zone.isActive ? Color("AccentColor") : Color.secondary)
-                        .frame(width: 6, height: 6)
-
+                if !zone.isActive {
                     statusText(zone)
                         .font(.caption)
                         .foregroundStyle(Color.secondary)
@@ -141,7 +137,6 @@ struct SidebarView: View {
 
     private func statusText(_ zone: Zone) -> Text {
         switch zone.status {
-        case "active": Text("Active")
         case "pending": Text("Pending")
         case "initializing": Text("Initializing")
         case "moved": Text("Moved")
