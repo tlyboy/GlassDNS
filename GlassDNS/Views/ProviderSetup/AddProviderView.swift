@@ -70,7 +70,7 @@ struct AddProviderView: View {
                     }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Add", role: .confirm) {
+                    Button(role: .confirm) {
                         Task {
                             let success = await viewModel.addAccount(
                                 displayName: displayName.isEmpty ? selectedType.displayName : displayName,
@@ -81,6 +81,9 @@ struct AddProviderView: View {
                                 isPresented = false
                             }
                         }
+                    } label: {
+                        Text("Add")
+                            .foregroundStyle(.white)
                     }
                     .disabled(!isFormValid || viewModel.isLoading)
                 }

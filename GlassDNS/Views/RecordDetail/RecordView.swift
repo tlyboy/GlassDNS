@@ -52,8 +52,11 @@ struct RecordView: View {
                     if viewModel.isSaving {
                         ProgressView()
                     } else {
-                        Button("Save", role: .confirm) {
+                        Button(role: .confirm) {
                             Task { await save() }
+                        } label: {
+                            Text("Save")
+                                .foregroundStyle(.white)
                         }
                         .disabled(!viewModel.canAttemptSave)
                     }
