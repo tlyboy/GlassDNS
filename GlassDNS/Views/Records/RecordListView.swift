@@ -20,6 +20,7 @@ struct RecordListView: View {
                         } label: {
                             Label("Delete", systemImage: "trash")
                         }
+                        .tint(.red)
                     }
                     .contextMenu {
                         Button(role: .destructive) {
@@ -27,6 +28,7 @@ struct RecordListView: View {
                         } label: {
                             Label("Delete", systemImage: "trash")
                         }
+                        .tint(.red)
                     }
                 }
 

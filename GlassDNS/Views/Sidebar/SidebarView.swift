@@ -111,6 +111,7 @@ struct SidebarView: View {
             if isLoading {
                 ProgressView()
                     .controlSize(.small)
+                    .tint(nil)
             }
         }
     }
