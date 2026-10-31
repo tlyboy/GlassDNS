@@ -27,13 +27,11 @@ struct SettingsView: View {
             if !providerSetupViewModel.accounts.isEmpty {
                 Section("Providers") {
                     ForEach(providerSetupViewModel.accounts) { account in
-                        Label {
-                            Text(account.displayName)
-                            Text(LocalizedStringKey(account.providerType.displayName))
-                        } icon: {
-                            Image(systemName: account.providerType.icon)
-                                .foregroundStyle(Color.accentColor)
-                        }
+                        SubtitleLabel(
+                            title: Text(account.displayName),
+                            subtitle: Text(LocalizedStringKey(account.providerType.displayName)),
+                            systemImage: account.providerType.icon
+                        )
                     }
                     .onMove(perform: providerSetupViewModel.moveAccounts)
                     .onDelete { offsets in

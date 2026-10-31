@@ -116,16 +116,11 @@ struct SidebarView: View {
     }
 
     private func zoneRow(_ zone: Zone) -> some View {
-        Label {
-            Text(zone.name)
-                .foregroundStyle(Color.primary)
-            if !zone.isActive {
-                statusText(zone)
-            }
-        } icon: {
-            Image(systemName: "globe")
-                .foregroundStyle(Color("AccentColor"))
-        }
+        SubtitleLabel(
+            title: Text(zone.name),
+            subtitle: zone.isActive ? nil : statusText(zone),
+            systemImage: "globe"
+        )
     }
 
     private func statusText(_ zone: Zone) -> Text {

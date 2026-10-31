@@ -14,15 +14,12 @@ struct RecordRowView: View {
             : AnyLayout(VStackLayout(alignment: .trailing, spacing: 2))
 
         rowLayout {
-            Label {
-                Text(record.name)
-                    .lineLimit(isAccessibilitySize ? nil : 1)
-                Text(record.content)
-                    .lineLimit(isAccessibilitySize ? nil : 1)
-            } icon: {
-                Image(systemName: record.type.icon)
-                    .foregroundStyle(Color("AccentColor"))
-            }
+            SubtitleLabel(
+                title: Text(record.name),
+                subtitle: Text(record.content),
+                systemImage: record.type.icon,
+                lineLimit: isAccessibilitySize ? nil : 1
+            )
 
             if !isAccessibilitySize {
                 Spacer()
