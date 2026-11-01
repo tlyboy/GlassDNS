@@ -63,7 +63,7 @@ struct RecordView: View {
                 }
             }
         }
-        .confirmationDialog("Discard Changes?", isPresented: $showingDiscardConfirmation, titleVisibility: .visible) {
+        .alert("Discard Changes?", isPresented: $showingDiscardConfirmation) {
             Button("Discard Changes", role: .destructive) { dismiss() }
             Button("Keep Editing", role: .cancel) {}
         }

@@ -32,6 +32,13 @@ struct SettingsView: View {
                             subtitle: Text(LocalizedStringKey(account.providerType.displayName)),
                             systemImage: account.providerType.icon
                         )
+                        .swipeActions(edge: .trailing) {
+                            // A destructive role or onDelete collapses the row before the confirmation is answered.
+                            Button("Delete", systemImage: "trash") {
+                                accountToDelete = account
+                            }
+                            .tint(.red)
+                        }
                         .contextMenu {
                             // A context menu takes over the long press that starts a drag on touch screens.
                             if ProcessInfo.processInfo.isiOSAppOnMac {
@@ -43,20 +50,16 @@ struct SettingsView: View {
                         }
                     }
                     .onMove(perform: providerSetupViewModel.moveAccounts)
-                    .onDelete { offsets in
-                        accountToDelete = offsets.first.map { providerSetupViewModel.accounts[$0] }
-                    }
                 }
             }
         }
         .pickerStyle(.segmented)
-        .confirmationDialog(
+        .alert(
             "Are you sure you want to delete this provider?",
             isPresented: .init(
                 get: { accountToDelete != nil },
                 set: { if !$0 { accountToDelete = nil } }
-            ),
-            titleVisibility: .visible
+            )
         ) {
             Button("Delete", role: .destructive) {
                 if let accountToDelete {

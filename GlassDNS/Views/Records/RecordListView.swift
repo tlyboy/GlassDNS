@@ -15,7 +15,8 @@ struct RecordListView: View {
                         RecordRowView(record: record)
                     }
                     .swipeActions(edge: .trailing) {
-                        Button(role: .destructive) {
+                        // A destructive role collapses the row before the confirmation is answered.
+                        Button {
                             recordToDelete = record
                         } label: {
                             Label("Delete", systemImage: "trash")
@@ -82,13 +83,12 @@ struct RecordListView: View {
                 }
             }
         }
-        .confirmationDialog(
+        .alert(
             "Are you sure you want to delete this record?",
             isPresented: .init(
                 get: { recordToDelete != nil },
                 set: { if !$0 { recordToDelete = nil } }
-            ),
-            titleVisibility: .visible
+            )
         ) {
             Button("Delete", role: .destructive) {
                 if let record = recordToDelete {
