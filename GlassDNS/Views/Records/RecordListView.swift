@@ -30,6 +30,7 @@ struct RecordListView: View {
                         }
                         .tint(.red)
                     }
+                    .listRowBackground(rowBackground(for: record))
                 }
 
                 if viewModel.filteredRecords.isEmpty && !(viewModel.isLoading && viewModel.records.isEmpty) {
@@ -111,6 +112,12 @@ struct RecordListView: View {
         .onAppear {
             Task { await viewModel.loadRecords() }
         }
+    }
+
+    // The native selection is nearly invisible on Mac, but a custom background makes iPad draw a focus frame.
+    private func rowBackground(for record: DNSRecord) -> Color? {
+        guard ProcessInfo.processInfo.isiOSAppOnMac, selection == record.id else { return nil }
+        return Color(.systemGray3)
     }
 
     private var selectedRecord: DNSRecord? {
