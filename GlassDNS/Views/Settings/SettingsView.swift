@@ -32,6 +32,15 @@ struct SettingsView: View {
                             subtitle: Text(LocalizedStringKey(account.providerType.displayName)),
                             systemImage: account.providerType.icon
                         )
+                        .contextMenu {
+                            // A context menu takes over the long press that starts a drag on touch screens.
+                            if ProcessInfo.processInfo.isiOSAppOnMac {
+                                Button("Delete", systemImage: "trash", role: .destructive) {
+                                    accountToDelete = account
+                                }
+                                .tint(.red)
+                            }
+                        }
                     }
                     .onMove(perform: providerSetupViewModel.moveAccounts)
                     .onDelete { offsets in
