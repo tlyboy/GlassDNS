@@ -2,7 +2,7 @@
 
 🌐 A DNS management app for iPhone and iPad with native Liquid Glass UI
 
-<div align="center"><img alt="GlassDNS banner" src="img/banner.png" width="280"></div>
+<div align="center"><img alt="GlassDNS banner" src="img/banner.png" width="280" height="608"></div>
 
 | Category  | Stack               |
 | --------- | ------------------- |
@@ -67,11 +67,11 @@ Select your target device or simulator in Xcode, then press `Cmd + R` to build a
 ### Screenshots
 
 <p>
-  <img src="screenshots/01_domains.png" width="200" />
-  <img src="screenshots/02_records.png" width="200" />
-  <img src="screenshots/03_providers.png" width="200" />
-  <img src="screenshots/04_edit.png" width="200" />
-  <img src="screenshots/05_security.png" width="200" />
+  <img src="screenshots/01_domains.png" width="200" height="433" alt="Domain list in GlassDNS" />
+  <img src="screenshots/02_records.png" width="200" height="433" alt="DNS records for a domain" />
+  <img src="screenshots/03_providers.png" width="200" height="433" alt="DNS provider settings" />
+  <img src="screenshots/04_edit.png" width="200" height="433" alt="Form for editing a DNS record" />
+  <img src="screenshots/05_security.png" width="200" height="433" alt="GlassDNS security settings" />
 </p>
 
 ## License

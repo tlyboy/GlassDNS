@@ -2,7 +2,7 @@
 
 🌐 一款采用原生 Liquid Glass 设计的 iPhone 和 iPad DNS 管理应用
 
-<div align="center"><img alt="GlassDNS banner" src="img/banner-zh.png" width="280"></div>
+<div align="center"><img alt="GlassDNS 横幅" src="img/banner-zh.png" width="280" height="608"></div>
 
 | 分类 | 技术栈            |
 | ---- | ----------------- |
@@ -67,11 +67,11 @@ open GlassDNS.xcodeproj
 ### 截图
 
 <p>
-  <img src="screenshots/zh/01_domains.png" width="200" />
-  <img src="screenshots/zh/02_records.png" width="200" />
-  <img src="screenshots/zh/03_providers.png" width="200" />
-  <img src="screenshots/zh/04_edit.png" width="200" />
-  <img src="screenshots/zh/05_security.png" width="200" />
+  <img src="screenshots/zh/01_domains.png" width="200" height="433" alt="GlassDNS 域名列表" />
+  <img src="screenshots/zh/02_records.png" width="200" height="433" alt="域名的 DNS 记录列表" />
+  <img src="screenshots/zh/03_providers.png" width="200" height="433" alt="DNS 供应商设置" />
+  <img src="screenshots/zh/04_edit.png" width="200" height="433" alt="编辑 DNS 记录的表单" />
+  <img src="screenshots/zh/05_security.png" width="200" height="433" alt="GlassDNS 安全设置" />
 </p>
 
 ## 使用许可
